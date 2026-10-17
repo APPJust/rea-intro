@@ -1,0 +1,3773 @@
+{
+ "schema_version": 1,
+ "is_template": false,
+ "title": "拆開任何軟體？REA 與 AI 逆向工程",
+ "content_type": "technical",
+ "learning_goal": "能說出 REA 的「代理人／REA／分析引擎」三層如何合作，並判斷一個想復刻某功能的需求是否落在它的能力範圍內",
+ "fps": 30,
+ "width": 1920,
+ "height": 1080,
+ "duration": 480.0,
+ "video_locale": "zh-TW",
+ "subtitle_languages": [
+  "zh-TW",
+  "en-US",
+  "vi-VN",
+  "ja-JP"
+ ],
+ "approval": {
+  "status": "approved",
+  "evidence": "2026-10-17 使用者於對話回覆「樣片可以，照大綱做完整正片」（樣片：lessons/rea-sample，第 5 幕三層拆解圖，Gemini gemini-3.8-flash-tts／Charon，工程藍圖風格）"
+ },
+ "sources": [
+  {
+   "id": "rea-git",
+   "title": "morluto/rea git 歷史（首次提交、改名、每月提交數、README 里程碑）",
+   "url": "https://github.com/morluto/rea",
+   "checked_at": "2026-10-17",
+   "published_at": "2026-04-14"
+  },
+  {
+   "id": "rea-readme",
+   "title": "morluto/rea README（rea-agents 6.5.0）",
+   "url": "https://github.com/morluto/rea/blob/main/README.md",
+   "checked_at": "2026-10-17"
+  },
+  {
+   "id": "npm",
+   "title": "npm rea-agents 套件（首次發布 2026-07-12、版本 6.5.0）",
+   "url": "https://www.npmjs.com/package/rea-agents",
+   "checked_at": "2026-10-17"
+  },
+  {
+   "id": "ref-video",
+   "title": "Gary Chen〈REA 到底在紅什麼？原理、實測，以及我的看法〉（使用者提供字幕）",
+   "url": "https://www.youtube.com/watch?v=r1jHxwwg5tk",
+   "checked_at": "2026-10-17"
+  },
+  {
+   "id": "own-test",
+   "title": "本片實測：REA 6.5.0 analyze-javascript-application 分析自製 4 檔 Electron App（2026-10-17）",
+   "url": "evidence/own-test.md",
+   "checked_at": "2026-10-17"
+  },
+  {
+   "id": "fake-copy",
+   "title": "REA reverse engineer anything GitHub: true or false（山寨版木馬報導）",
+   "url": "https://pasqualepillitteri.it/en/news/23845/rea-reverse-engineer-anything-github-true-false",
+   "checked_at": "2026-10-17"
+  }
+ ],
+ "coverage": {
+  "origin": {
+   "summary": "2026-04-14 首次提交（betterBinaryMCP，Hopper 的 MCP 外掛）；2026-07-12 改名 REA 並發布 npm；10 月登上熱門榜，10/15 README 宣布 25 萬星",
+   "source_ids": [
+    "rea-git",
+    "npm",
+    "rea-readme"
+   ],
+   "date": "2026-04-14",
+   "precision": "day",
+   "event_type": "首次實作（第一次提交）"
+  },
+  "principle": {
+   "summary": "逆向工程從成品倒推；編譯丟失資訊；傳統反編譯工具的門檻在判斷；REA 以 MCP＋Skill 把引擎接給代理人，回傳證據；調查迴圈與依目標選方法",
+   "source_ids": [
+    "rea-readme",
+    "ref-video"
+   ]
+  },
+  "comparison": {
+   "summary": "同一任務（復刻筆記軟體搜尋）比較：只給截圖的 AI、AI＋REA、人工逆向工具",
+   "source_ids": [
+    "ref-video",
+    "rea-readme"
+   ],
+   "alternatives": [
+    "只用代理人＋截圖",
+    "代理人＋REA（目標方案）",
+    "人工使用逆向工具（Ghidra／IDA／Hopper）"
+   ],
+   "dimensions": [
+    "速度",
+    "看得到多深",
+    "有無可查證的證據",
+    "學習門檻"
+   ],
+   "conditions": "同一任務：復刻筆記軟體的搜尋功能；速度與成品差異引自參考影片的對照觀察，非本片受控實測；REA 版本 6.5.0",
+   "time_sensitive": true,
+   "checked_at": "2026-10-17"
+  },
+  "application": {
+   "summary": "本片實測 REA 6.5.0 分析自製 Electron App 並串出 IPC 呼叫鏈與限制說明；參考影片復刻 Mac 備忘錄",
+   "source_ids": [
+    "own-test",
+    "ref-video"
+   ],
+   "case_type": "real"
+  },
+  "outlook": {
+   "summary": "能力邊界（伺服器端、混淆、授權、山寨版）；三個訊號；主流代理人可能內建類似能力；護城河移到功能之外",
+   "source_ids": [
+    "rea-readme",
+    "ref-video",
+    "fake-copy"
+   ],
+   "claim_type": "inference",
+   "as_of": "2026-10-17"
+  }
+ },
+ "variants": {
+  "zh-TW": {
+   "mix": "audio/zh-TW.mp3",
+   "scenes": [
+    {
+     "id": "s01",
+     "section": "origin",
+     "start": 0.0,
+     "end": 33.855,
+     "title": "一個專案，二十五萬顆星",
+     "screen": "2026 年 10 月爆紅・起點 2026-04-14",
+     "objective": "用現象引起好奇：REA 是什麼、紅到什麼程度，並點出起點日期",
+     "narration": "2026 年 10 月，GitHub 上有個開源專案突然爆紅。到了 10 月 15 日，它的星星數已經突破二十五萬。它叫 REA，全名是 Reverse Engineer Anything，也就是「逆向工程任何東西」。有人用它拆解老遊戲的玩法，再用 Rust 重寫；也有人把經典射擊遊戲的第一關，搬上了網頁。而它的故事，要從 2026 年 4 月 14 日說起。",
+     "kind": "s01",
+     "spoken_date": "2026 年 4 月 14 日",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 0.0,
+       "end": 1.103
+      },
+      {
+       "name": "b0",
+       "start": 1.103,
+       "end": 6.563
+      },
+      {
+       "name": "b1",
+       "start": 6.563,
+       "end": 11.213
+      },
+      {
+       "name": "b2",
+       "start": 11.213,
+       "end": 16.054
+      },
+      {
+       "name": "b3",
+       "start": 16.054,
+       "end": 19.504
+      },
+      {
+       "name": "b4",
+       "start": 19.504,
+       "end": 23.641
+      },
+      {
+       "name": "b5",
+       "start": 23.641,
+       "end": 28.117
+      },
+      {
+       "name": "b6",
+       "start": 28.117,
+       "end": 33.855
+      }
+     ],
+     "qa_times": [
+      4.433,
+      9.488,
+      14.233
+     ]
+    },
+    {
+     "id": "s02",
+     "section": "origin",
+     "start": 33.855,
+     "end": 85.35,
+     "title": "一份 Hopper 外掛的身世",
+     "screen": "2026-04-14 第一次提交 → 2026-07-12 改名 REA",
+     "objective": "認識 REA 的起源與時間軸，理解它爆紅的原因",
+     "narration": "不過，REA 不是一夜之間冒出來的。它的第一次提交，在 2026 年 4 月 14 日。當時它叫 betterBinaryMCP，只是一個讓 AI 操作 Hopper 反組譯器的小外掛。7 月 12 日，它改名 REA，發布到 npm，能分析的東西，也從原生程式擴充到網頁、桌面和手機 App。10 月初它登上熱門榜，光是 10 月就有兩千六百多次提交。它紅，是因為一句話就說得懂：看到喜歡的功能，叫 AI 拆給你看；也戳中一個焦慮：如果什麼都拆得開，軟體公司還守得住嗎？",
+     "kind": "s02",
+     "spoken_date": "2026 年 4 月 14 日",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 33.855,
+       "end": 34.949
+      },
+      {
+       "name": "b0",
+       "start": 34.949,
+       "end": 39.152
+      },
+      {
+       "name": "b1",
+       "start": 39.152,
+       "end": 44.069
+      },
+      {
+       "name": "b2",
+       "start": 44.069,
+       "end": 47.285
+      },
+      {
+       "name": "b3",
+       "start": 47.285,
+       "end": 52.131
+      },
+      {
+       "name": "b4",
+       "start": 52.131,
+       "end": 57.041
+      },
+      {
+       "name": "b5",
+       "start": 57.041,
+       "end": 64.52
+      },
+      {
+       "name": "b6",
+       "start": 64.52,
+       "end": 71.039
+      },
+      {
+       "name": "b7",
+       "start": 71.039,
+       "end": 77.847
+      },
+      {
+       "name": "b8",
+       "start": 77.847,
+       "end": 85.35
+      }
+     ],
+     "qa_times": [
+      37.651,
+      42.211,
+      46.277
+     ]
+    },
+    {
+     "id": "s03",
+     "section": "principle",
+     "start": 85.35,
+     "end": 130.445,
+     "title": "為什麼成品看不出做法",
+     "screen": "逆向工程：從成品倒推回設計",
+     "objective": "理解逆向工程的定義：為什麼成品看不出做法，以及從成品倒推的方法",
+     "narration": "要懂 REA，先從逆向工程說起。平常做軟體，是工程師寫好原始碼，再由編譯器翻成機器看得懂的指令，打包成 App。這條路是單行道：註解、變數名稱，在編譯時就丟掉了。逆向工程，就是從成品倒推回去，研究它的結構、資料怎麼流動、邏輯怎麼運作。這門技術常用在相容性、資安檢查，以及保存已經停產的軟體。就像拿到一只沒有設計圖的機械錶，你只能聽它走動、按按看，或者打開後蓋，看齒輪怎麼咬合。",
+     "kind": "s03",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 85.35,
+       "end": 86.407
+      },
+      {
+       "name": "b0",
+       "start": 86.407,
+       "end": 90.284
+      },
+      {
+       "name": "b1",
+       "start": 90.284,
+       "end": 93.748
+      },
+      {
+       "name": "b2",
+       "start": 93.748,
+       "end": 98.418
+      },
+      {
+       "name": "b3",
+       "start": 98.418,
+       "end": 104.847
+      },
+      {
+       "name": "b4",
+       "start": 104.847,
+       "end": 108.284
+      },
+      {
+       "name": "b5",
+       "start": 108.284,
+       "end": 113.192
+      },
+      {
+       "name": "b6",
+       "start": 113.192,
+       "end": 119.844
+      },
+      {
+       "name": "b7",
+       "start": 119.844,
+       "end": 123.016
+      },
+      {
+       "name": "b8",
+       "start": 123.016,
+       "end": 130.445
+      }
+     ],
+     "qa_times": [
+      88.945,
+      92.616,
+      96.683
+     ]
+    },
+    {
+     "id": "s04",
+     "section": "principle",
+     "start": 130.445,
+     "end": 164.22,
+     "title": "工具一直都在，難的是從哪下刀",
+     "screen": "Ghidra・IDA・Hopper 與專家的判斷",
+     "objective": "知道傳統逆向工具能做什麼，以及真正的門檻在判斷",
+     "narration": "專業的拆錶工具，其實早就有了，像 Ghidra、IDA、Hopper，能把機器指令反編譯成接近人類可讀的程式碼。可是反編譯出來的程式碼，到處是沒有名字的變數和片段，還得一行行驗證。但難的從來不是工具，而是判斷：上千個函式攤在眼前，該從哪一個下刀？過去，這份判斷只存在少數專家的經驗裡。",
+     "kind": "s04",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 130.445,
+       "end": 131.46
+      },
+      {
+       "name": "b0",
+       "start": 131.46,
+       "end": 134.82
+      },
+      {
+       "name": "b1",
+       "start": 134.82,
+       "end": 137.56
+      },
+      {
+       "name": "b2",
+       "start": 137.56,
+       "end": 142.789
+      },
+      {
+       "name": "b3",
+       "start": 142.789,
+       "end": 150.343
+      },
+      {
+       "name": "b4",
+       "start": 150.343,
+       "end": 154.477
+      },
+      {
+       "name": "b5",
+       "start": 154.477,
+       "end": 158.773
+      },
+      {
+       "name": "b6",
+       "start": 158.773,
+       "end": 164.22
+      }
+     ],
+     "qa_times": [
+      133.74,
+      136.79,
+      140.774
+     ]
+    },
+    {
+     "id": "s05",
+     "section": "principle",
+     "start": 164.22,
+     "end": 205.715,
+     "title": "三層拆解圖",
+     "screen": "代理人提問、REA 轉譯、老工具動手",
+     "objective": "看懂代理人／REA／分析引擎三層如何分工，以及提問與證據的流向",
+     "narration": "REA 做的事，是把這些老工具直接接給 AI 代理人。你可以把它拆成三層。最上層是代理人，像 Claude Code 或 Codex，負責理解需求、規劃下一步。中間是 REA：它用 MCP 提供分析工具，再附一份 Skill，像辦案手冊，教代理人怎麼查、怎麼整理證據。最底層，才是 Ghidra、Hopper 這些老牌引擎。代理人提問，REA 指揮引擎去拆，再把證據帶回來：檔案雜湊、程式位置，還有它不確定的地方。",
+     "kind": "s05",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 164.22,
+       "end": 165.301
+      },
+      {
+       "name": "b0",
+       "start": 165.301,
+       "end": 170.734
+      },
+      {
+       "name": "b1",
+       "start": 170.734,
+       "end": 172.986
+      },
+      {
+       "name": "b2",
+       "start": 172.986,
+       "end": 175.865
+      },
+      {
+       "name": "b3",
+       "start": 175.865,
+       "end": 180.196
+      },
+      {
+       "name": "b4",
+       "start": 180.196,
+       "end": 184.345
+      },
+      {
+       "name": "b5",
+       "start": 184.345,
+       "end": 187.403
+      },
+      {
+       "name": "b6",
+       "start": 187.403,
+       "end": 190.569
+      },
+      {
+       "name": "b7",
+       "start": 190.569,
+       "end": 194.97
+      },
+      {
+       "name": "b8",
+       "start": 194.97,
+       "end": 198.437
+      },
+      {
+       "name": "b9",
+       "start": 198.437,
+       "end": 205.715
+      }
+     ],
+     "qa_times": [
+      168.617,
+      172.46,
+      175.025
+     ]
+    },
+    {
+     "id": "s06",
+     "section": "principle",
+     "start": 205.715,
+     "end": 252.65,
+     "title": "一邊查，一邊對答案",
+     "screen": "調查迴圈與不同目標的查法",
+     "objective": "理解調查迴圈，並能說出不同目標各用什麼方法查",
+     "narration": "實際調查時，它是一個迴圈：先檢查目標，順著線索追，動手實作，再跑起來和原版比對；對不上，就回頭補查。目標不同，查法也不同：網頁看頁面結構和網路請求；Electron 桌面 App 看模組之間的呼叫；原生程式，才需要動用反編譯。拿筆記軟體的搜尋來說，截圖只看得到搜尋框；比對標題還是內文、有沒有分詞、怎麼排序，得靠調查才挖得出來。需求就從「做個搜尋」，升級成「照這些驗證過的規則做」。",
+     "kind": "s06",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 205.715,
+       "end": 206.728
+      },
+      {
+       "name": "b0",
+       "start": 206.728,
+       "end": 210.169
+      },
+      {
+       "name": "b1",
+       "start": 210.169,
+       "end": 217.002
+      },
+      {
+       "name": "b2",
+       "start": 217.002,
+       "end": 219.901
+      },
+      {
+       "name": "b3",
+       "start": 219.901,
+       "end": 222.67
+      },
+      {
+       "name": "b4",
+       "start": 222.67,
+       "end": 226.224
+      },
+      {
+       "name": "b5",
+       "start": 226.224,
+       "end": 229.739
+      },
+      {
+       "name": "b6",
+       "start": 229.739,
+       "end": 233.84
+      },
+      {
+       "name": "b7",
+       "start": 233.84,
+       "end": 238.568
+      },
+      {
+       "name": "b8",
+       "start": 238.568,
+       "end": 245.292
+      },
+      {
+       "name": "b9",
+       "start": 245.292,
+       "end": 252.65
+      }
+     ],
+     "qa_times": [
+      209.049,
+      214.186,
+      219.052
+     ]
+    },
+    {
+     "id": "s07",
+     "section": "comparison",
+     "start": 252.65,
+     "end": 301.985,
+     "title": "三種復刻法並排",
+     "screen": "同一任務：復刻筆記軟體的搜尋",
+     "objective": "能比較三種復刻做法的速度、深度、證據與門檻，知道何時該用 REA",
+     "narration": "同樣是復刻筆記軟體的搜尋，我們並排看三種做法。第一種，只給 AI 截圖，讓它自己推理：最快，但細節全靠猜。第二種，AI 加上 REA：慢一些，但每一步都有證據可查。第三種，人工用逆向工具：最深入，可是門檻最高、最花時間。有人做過對照：沒裝 REA 的那組先做完，裝了的那組成品明顯更好。不過，這是參考影片引述的觀察，不是嚴格的評測。所以，熟悉的小功能，截圖可能就夠；想知道看不見的規則，才值得動用 REA。",
+     "kind": "s07",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 252.65,
+       "end": 253.847
+      },
+      {
+       "name": "b0",
+       "start": 253.847,
+       "end": 259.175
+      },
+      {
+       "name": "b1",
+       "start": 259.175,
+       "end": 265.523
+      },
+      {
+       "name": "b2",
+       "start": 265.523,
+       "end": 272.61
+      },
+      {
+       "name": "b3",
+       "start": 272.61,
+       "end": 280.011
+      },
+      {
+       "name": "b4",
+       "start": 280.011,
+       "end": 287.644
+      },
+      {
+       "name": "b5",
+       "start": 287.644,
+       "end": 292.53
+      },
+      {
+       "name": "b6",
+       "start": 292.53,
+       "end": 301.985
+      }
+     ],
+     "qa_times": [
+      257.111,
+      262.949,
+      269.667
+     ]
+    },
+    {
+     "id": "s08",
+     "section": "application",
+     "start": 301.985,
+     "end": 357.36,
+     "title": "一行指令與一本備忘錄",
+     "screen": "安裝、本片實測與參考影片案例",
+     "objective": "知道怎麼安裝，並從實測與案例看到 REA 實際產出什麼",
+     "narration": "安裝很簡單：執行 npx rea-agents setup，或者乾脆把 repo 連結丟給你的代理人，請它自己裝。我們實際跑了一次：用 REA 6.5 版，分析一個自己寫的迷你筆記 App。它自動串出整條呼叫鏈：從網頁端的搜尋，經過 IPC 頻道，到主程序的搜尋函式。還主動附上限制：程式碼沒有被執行，找不到不代表不存在。參考影片則讓 AI 復刻 Mac 的備忘錄，只要筆記功能。做出來的 App 能新增、釘選、分資料夾、搜尋和復原；但目標刻意挑得簡單，看不出 REA 能挖多深。",
+     "kind": "s08",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 301.985,
+       "end": 303.053
+      },
+      {
+       "name": "b0",
+       "start": 303.053,
+       "end": 310.382
+      },
+      {
+       "name": "b1",
+       "start": 310.382,
+       "end": 315.729
+      },
+      {
+       "name": "b2",
+       "start": 315.729,
+       "end": 323.283
+      },
+      {
+       "name": "b3",
+       "start": 323.283,
+       "end": 332.223
+      },
+      {
+       "name": "b4",
+       "start": 332.223,
+       "end": 339.631
+      },
+      {
+       "name": "b5",
+       "start": 339.631,
+       "end": 344.994
+      },
+      {
+       "name": "b6",
+       "start": 344.994,
+       "end": 351.384
+      },
+      {
+       "name": "b7",
+       "start": 351.384,
+       "end": 357.36
+      }
+     ],
+     "qa_times": [
+      307.317,
+      313.656,
+      320.106
+     ]
+    },
+    {
+     "id": "s09",
+     "section": "application",
+     "start": 357.36,
+     "end": 397.055,
+     "title": "拆不到的地方",
+     "screen": "能力邊界：伺服器、混淆、授權",
+     "objective": "能判斷哪些需求超出 REA 的能力或合法範圍",
+     "narration": "REA 也有拆不到的地方。很多服務的核心在遠端伺服器：你抓得到請求和回應，拿不到後端程式。像跨裝置同步，畫面好做，斷線、衝突怎麼處理，才是真功夫。重度混淆或加殼的程式，推論會變成猜測；而 IDA、Hopper 這些商業工具要合法授權，分析的對象也要是你有權研究的軟體。還有，下載要認明官方來源：爆紅之後，就出現過夾帶木馬的山寨版。",
+     "kind": "s09",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 357.36,
+       "end": 358.446
+      },
+      {
+       "name": "b0",
+       "start": 358.446,
+       "end": 361.483
+      },
+      {
+       "name": "b1",
+       "start": 361.483,
+       "end": 368.753
+      },
+      {
+       "name": "b2",
+       "start": 368.753,
+       "end": 375.753
+      },
+      {
+       "name": "b3",
+       "start": 375.753,
+       "end": 380.732
+      },
+      {
+       "name": "b4",
+       "start": 380.732,
+       "end": 389.111
+      },
+      {
+       "name": "b5",
+       "start": 389.111,
+       "end": 397.055
+      }
+     ],
+     "qa_times": [
+      360.565,
+      365.718,
+      372.853
+     ]
+    },
+    {
+     "id": "s10",
+     "section": "outlook",
+     "start": 397.055,
+     "end": 434.31,
+     "title": "熱潮留下的三個訊號",
+     "screen": "截至 2026-10-17 的觀察與推測",
+     "objective": "帶走三個可遷移的啟示，並分辨觀察與推測",
+     "narration": "這波熱潮，留下三個訊號。第一，舊工具接上代理人，是質變：工具存在，不等於一般人用得起來。第二，參考物是最好的規格書；但要做多少，邊界還是得自己畫。這也適用在寫企劃：給 AI 一份好範本，比給一堆形容詞有用。第三，這是推測：主流的程式代理人，很可能遲早內建類似的能力。",
+     "kind": "s10",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 397.055,
+       "end": 398.146
+      },
+      {
+       "name": "b0",
+       "start": 398.146,
+       "end": 401.508
+      },
+      {
+       "name": "b1",
+       "start": 401.508,
+       "end": 410.277
+      },
+      {
+       "name": "b2",
+       "start": 410.277,
+       "end": 418.256
+      },
+      {
+       "name": "b3",
+       "start": 418.256,
+       "end": 425.196
+      },
+      {
+       "name": "b4",
+       "start": 425.196,
+       "end": 434.31
+      }
+     ],
+     "qa_times": [
+      400.427,
+      406.493,
+      414.866
+     ]
+    },
+    {
+     "id": "s11",
+     "section": "outlook",
+     "start": 434.31,
+     "end": 477.005,
+     "title": "城牆沉到水面下",
+     "screen": "功能之外，才是產品的護城河",
+     "objective": "理解功能之外的產品護城河，並知道使用 REA 要聚焦目標",
+     "narration": "那軟體公司的護城河，會消失嗎？單一功能的小工具，確實越來越容易被復刻。但功能只是冰山露出水面的一角；水面下還有同步架構、舊資料相容、客服、權限，以及使用者累積多年的資料。對個人來說，量身打造一個工具變得很便宜；要做成賣給大眾的產品，仍然是一場長期營運的硬仗。從點子到雛形的距離被大幅拉近，但雛形到產品，還是軟體工程的本質。所以，使用 REA 時，目標越聚焦越好。",
+     "kind": "s11",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 434.31,
+       "end": 435.423
+      },
+      {
+       "name": "b0",
+       "start": 435.423,
+       "end": 439.437
+      },
+      {
+       "name": "b1",
+       "start": 439.437,
+       "end": 443.464
+      },
+      {
+       "name": "b2",
+       "start": 443.464,
+       "end": 446.983
+      },
+      {
+       "name": "b3",
+       "start": 446.983,
+       "end": 455.61
+      },
+      {
+       "name": "b4",
+       "start": 455.61,
+       "end": 459.539
+      },
+      {
+       "name": "b5",
+       "start": 459.539,
+       "end": 464.375
+      },
+      {
+       "name": "b6",
+       "start": 464.375,
+       "end": 471.3
+      },
+      {
+       "name": "b7",
+       "start": 471.3,
+       "end": 477.005
+      }
+     ],
+     "qa_times": [
+      438.03,
+      442.051,
+      445.824
+     ]
+    },
+    {
+     "id": "credit",
+     "section": "credit",
+     "start": 477.005,
+     "end": 480.0,
+     "title": "",
+     "screen": "李振偉老師",
+     "narration": "",
+     "kind": "credit",
+     "phases": [
+      {
+       "name": "署名",
+       "start": 477.005,
+       "end": 480.0
+      }
+     ],
+     "qa_times": []
+    }
+   ],
+   "subtitles": {
+    "reviewed": true,
+    "timing_source": "ffmpeg silencedetect pauses in the actual Gemini narration, mapped to approved script segments; automated check only, listening review pending",
+    "cues": [
+     {
+      "start": 1.103,
+      "end": 5.827,
+      "text": {
+       "zh-TW": "2026 年 10 月，GitHub 上有個開源專案突然爆紅。",
+       "en-US": "In October 2026, an open-source project suddenly blew up on GitHub.",
+       "vi-VN": "Tháng 10 năm 2026, một dự án mã nguồn mở bỗng nổi như cồn trên GitHub.",
+       "ja-JP": "2026年10月、GitHubであるオープンソースプロジェクトが突然大ブレイクしました。"
+      },
+      "unit": "s01.0"
+     },
+     {
+      "start": 6.563,
+      "end": 10.314,
+      "text": {
+       "zh-TW": "到了 10 月 15 日，它的星星數已經突破二十五萬。",
+       "en-US": "By October 15, it had passed two hundred fifty thousand stars.",
+       "vi-VN": "Đến ngày 15 tháng 10, số sao của nó đã vượt hai trăm năm mươi nghìn.",
+       "ja-JP": "10月15日には、スター数が25万を突破しました。"
+      },
+      "unit": "s01.1"
+     },
+     {
+      "start": 11.213,
+      "end": 15.545,
+      "text": {
+       "zh-TW": "它叫 REA，全名是 Reverse Engineer Anything，",
+       "en-US": "It's called REA, short for Reverse Engineer Anything:",
+       "vi-VN": "Nó tên là REA, viết tắt của Reverse Engineer Anything,",
+       "ja-JP": "名前はREA、正式名称はReverse Engineer Anything、"
+      },
+      "unit": "s01.2"
+     },
+     {
+      "start": 16.054,
+      "end": 18.287,
+      "text": {
+       "zh-TW": "也就是「逆向工程任何東西」。",
+       "en-US": "reverse engineering, applied to anything.",
+       "vi-VN": "tức là “dịch ngược bất cứ thứ gì”.",
+       "ja-JP": "つまり「何でもリバースエンジニアリングする」という意味です。"
+      },
+      "unit": "s01.3"
+     },
+     {
+      "start": 19.504,
+      "end": 22.916,
+      "text": {
+       "zh-TW": "有人用它拆解老遊戲的玩法，再用 Rust 重寫；",
+       "en-US": "People used it to take apart an old game's mechanics and rewrite them in Rust;",
+       "vi-VN": "Có người dùng nó mổ xẻ lối chơi của một trò chơi cũ rồi viết lại bằng Rust;",
+       "ja-JP": "古いゲームの仕組みを分解し、Rustで書き直した人もいれば、"
+      },
+      "unit": "s01.4"
+     },
+     {
+      "start": 23.641,
+      "end": 27.087,
+      "text": {
+       "zh-TW": "也有人把經典射擊遊戲的第一關，搬上了網頁。",
+       "en-US": "others brought the first level of a classic shooter to the web.",
+       "vi-VN": "người khác đưa màn đầu của một game bắn súng kinh điển lên web.",
+       "ja-JP": "名作シューティングゲームの第1ステージをWebに移植した人もいます。"
+      },
+      "unit": "s01.5"
+     },
+     {
+      "start": 28.117,
+      "end": 31.969,
+      "text": {
+       "zh-TW": "而它的故事，要從 2026 年 4 月 14 日說起。",
+       "en-US": "And its story begins on April 14, 2026.",
+       "vi-VN": "Và câu chuyện của nó bắt đầu từ ngày 14 tháng 4 năm 2026.",
+       "ja-JP": "その物語は、2026年4月14日から始まります。"
+      },
+      "unit": "s01.6"
+     },
+     {
+      "start": 34.949,
+      "end": 38.407,
+      "text": {
+       "zh-TW": "不過，REA 不是一夜之間冒出來的。",
+       "en-US": "But REA didn't appear overnight.",
+       "vi-VN": "Nhưng REA không xuất hiện chỉ sau một đêm.",
+       "ja-JP": "ただし、REAは一夜にして生まれたわけではありません。"
+      },
+      "unit": "s02.0"
+     },
+     {
+      "start": 39.152,
+      "end": 43.178,
+      "text": {
+       "zh-TW": "它的第一次提交，在 2026 年 4 月 14 日。",
+       "en-US": "Its first commit was on April 14, 2026.",
+       "vi-VN": "Lần commit đầu tiên của nó là vào ngày 14 tháng 4 năm 2026.",
+       "ja-JP": "最初のコミットは2026年4月14日でした。"
+      },
+      "unit": "s02.1"
+     },
+     {
+      "start": 44.069,
+      "end": 46.583,
+      "text": {
+       "zh-TW": "當時它叫 betterBinaryMCP，",
+       "en-US": "Back then it was called betterBinaryMCP,",
+       "vi-VN": "Khi đó nó tên là betterBinaryMCP,",
+       "ja-JP": "当時の名前はbetterBinaryMCP。"
+      },
+      "unit": "s02.2"
+     },
+     {
+      "start": 47.285,
+      "end": 51.128,
+      "text": {
+       "zh-TW": "只是一個讓 AI 操作 Hopper 反組譯器的小外掛。",
+       "en-US": "a small plugin that let AI drive the Hopper disassembler.",
+       "vi-VN": "chỉ là một plugin nhỏ giúp AI điều khiển trình dịch ngược Hopper.",
+       "ja-JP": "AIに逆アセンブラのHopperを操作させる、小さなプラグインにすぎませんでした。"
+      },
+      "unit": "s02.3"
+     },
+     {
+      "start": 52.131,
+      "end": 56.128,
+      "text": {
+       "zh-TW": "7 月 12 日，它改名 REA，發布到 npm，",
+       "en-US": "On July 12, it was renamed REA and published to npm,",
+       "vi-VN": "Ngày 12 tháng 7, nó đổi tên thành REA và được phát hành lên npm,",
+       "ja-JP": "7月12日にREAへ改名し、npmで公開。"
+      },
+      "unit": "s02.4"
+     },
+     {
+      "start": 57.041,
+      "end": 63.061,
+      "text": {
+       "zh-TW": "能分析的東西，也從原生程式擴充到網頁、桌面和手機 App。",
+       "en-US": "and what it could analyze grew from native programs to web, desktop and mobile apps.",
+       "vi-VN": "phạm vi phân tích mở rộng từ chương trình gốc sang web, ứng dụng máy tính và di động.",
+       "ja-JP": "解析対象もネイティブプログラムから、Web、デスクトップ、モバイルアプリへと広がりました。"
+      },
+      "unit": "s02.5"
+     },
+     {
+      "start": 64.52,
+      "end": 69.979,
+      "text": {
+       "zh-TW": "10 月初它登上熱門榜，光是 10 月就有兩千六百多次提交。",
+       "en-US": "In early October it hit the trending charts, with over 2,600 commits in that month alone.",
+       "vi-VN": "Đầu tháng 10, nó lọt bảng xu hướng, riêng tháng 10 đã có hơn 2.600 commit.",
+       "ja-JP": "10月初めにトレンド入りし、10月だけで2,600回以上のコミットがありました。"
+      },
+      "unit": "s02.6"
+     },
+     {
+      "start": 71.039,
+      "end": 76.947,
+      "text": {
+       "zh-TW": "它紅，是因為一句話就說得懂：看到喜歡的功能，叫 AI 拆給你看；",
+       "en-US": "It took off because the pitch fits in one line: see a feature you like, and have AI take it apart for you;",
+       "vi-VN": "Nó nổi vì chỉ một câu là hiểu: thấy tính năng mình thích, nhờ AI mổ xẻ cho xem;",
+       "ja-JP": "ヒットした理由は一言で伝わるから。気に入った機能を見つけたら、AIに分解してもらう。"
+      },
+      "unit": "s02.7"
+     },
+     {
+      "start": 77.847,
+      "end": 83.407,
+      "text": {
+       "zh-TW": "也戳中一個焦慮：如果什麼都拆得開，軟體公司還守得住嗎？",
+       "en-US": "and it touched a nerve: if anything can be taken apart, can software companies still hold their ground?",
+       "vi-VN": "và nó chạm vào một nỗi lo: nếu cái gì cũng mổ xẻ được, công ty phần mềm còn giữ được vị thế không?",
+       "ja-JP": "そして不安も突きました。何でも分解できるなら、ソフトウェア企業は守りきれるのか、と。"
+      },
+      "unit": "s02.8"
+     },
+     {
+      "start": 86.407,
+      "end": 89.438,
+      "text": {
+       "zh-TW": "要懂 REA，先從逆向工程說起。",
+       "en-US": "To understand REA, start with reverse engineering.",
+       "vi-VN": "Để hiểu REA, hãy bắt đầu từ kỹ thuật dịch ngược.",
+       "ja-JP": "REAを理解するには、まずリバースエンジニアリングから。"
+      },
+      "unit": "s03.0"
+     },
+     {
+      "start": 90.284,
+      "end": 93.529,
+      "text": {
+       "zh-TW": "平常做軟體，是工程師寫好原始碼，",
+       "en-US": "Normally, engineers write source code,",
+       "vi-VN": "Thông thường, kỹ sư viết mã nguồn,",
+       "ja-JP": "普段のソフト開発では、エンジニアがソースコードを書き、"
+      },
+      "unit": "s03.1"
+     },
+     {
+      "start": 93.748,
+      "end": 97.665,
+      "text": {
+       "zh-TW": "再由編譯器翻成機器看得懂的指令，打包成 App。",
+       "en-US": "a compiler turns it into machine instructions, and it's packaged as an app.",
+       "vi-VN": "trình biên dịch chuyển nó thành lệnh máy, rồi đóng gói thành ứng dụng.",
+       "ja-JP": "コンパイラが機械向けの命令に変換し、アプリとしてパッケージします。"
+      },
+      "unit": "s03.2"
+     },
+     {
+      "start": 98.418,
+      "end": 103.734,
+      "text": {
+       "zh-TW": "這條路是單行道：註解、變數名稱，在編譯時就丟掉了。",
+       "en-US": "It's a one-way street: comments and variable names are thrown away during compilation.",
+       "vi-VN": "Đây là đường một chiều: chú thích và tên biến bị bỏ đi khi biên dịch.",
+       "ja-JP": "これは一方通行です。コメントや変数名は、コンパイルの時点で失われます。"
+      },
+      "unit": "s03.3"
+     },
+     {
+      "start": 104.847,
+      "end": 107.721,
+      "text": {
+       "zh-TW": "逆向工程，就是從成品倒推回去，",
+       "en-US": "Reverse engineering works backwards from the finished product,",
+       "vi-VN": "Dịch ngược là đi ngược từ thành phẩm,",
+       "ja-JP": "リバースエンジニアリングは、完成品から逆にたどり、"
+      },
+      "unit": "s03.4"
+     },
+     {
+      "start": 108.284,
+      "end": 112.112,
+      "text": {
+       "zh-TW": "研究它的結構、資料怎麼流動、邏輯怎麼運作。",
+       "en-US": "studying its structure, how data flows, and how the logic works.",
+       "vi-VN": "nghiên cứu cấu trúc, cách dữ liệu luân chuyển và cách logic vận hành.",
+       "ja-JP": "構造やデータの流れ、ロジックの動きを調べることです。"
+      },
+      "unit": "s03.5"
+     },
+     {
+      "start": 113.192,
+      "end": 116.588,
+      "text": {
+       "zh-TW": "這門技術常用在相容性、資安檢查，",
+       "en-US": "It is commonly used for compatibility work, security reviews,",
+       "vi-VN": "Kỹ thuật này thường dùng cho việc tương thích, kiểm tra bảo mật",
+       "ja-JP": "この技術は、互換性の確保やセキュリティ検査、"
+      },
+      "unit": "s03.6"
+     },
+     {
+      "start": 117.037,
+      "end": 118.901,
+      "text": {
+       "zh-TW": "以及保存已經停產的軟體。",
+       "en-US": "and preserving discontinued software.",
+       "vi-VN": "và lưu giữ phần mềm đã ngừng phát triển.",
+       "ja-JP": "販売終了したソフトの保存によく使われます。"
+      },
+      "unit": "s03.6"
+     },
+     {
+      "start": 119.844,
+      "end": 122.393,
+      "text": {
+       "zh-TW": "就像拿到一只沒有設計圖的機械錶，",
+       "en-US": "It's like holding a mechanical watch with no blueprint:",
+       "vi-VN": "Giống như cầm một chiếc đồng hồ cơ không có bản thiết kế,",
+       "ja-JP": "設計図のない機械式時計を手にしたようなものです。"
+      },
+      "unit": "s03.7"
+     },
+     {
+      "start": 123.016,
+      "end": 128.584,
+      "text": {
+       "zh-TW": "你只能聽它走動、按按看，或者打開後蓋，看齒輪怎麼咬合。",
+       "en-US": "you can listen to it tick, press its buttons, or open the back and watch how the gears mesh.",
+       "vi-VN": "bạn chỉ có thể nghe nó chạy, bấm thử, hoặc mở nắp sau xem các bánh răng ăn khớp ra sao.",
+       "ja-JP": "動く音を聞き、ボタンを押し、裏蓋を開けて歯車のかみ合いを見るしかありません。"
+      },
+      "unit": "s03.8"
+     },
+     {
+      "start": 131.46,
+      "end": 134.072,
+      "text": {
+       "zh-TW": "專業的拆錶工具，其實早就有了，",
+       "en-US": "Professional watch-opening tools have existed for years:",
+       "vi-VN": "Những công cụ tháo đồng hồ chuyên nghiệp thật ra đã có từ lâu,",
+       "ja-JP": "プロ用の“時計を開ける道具”は、実はずっと前からあります。"
+      },
+      "unit": "s04.0"
+     },
+     {
+      "start": 134.82,
+      "end": 136.908,
+      "text": {
+       "zh-TW": "像 Ghidra、IDA、Hopper，",
+       "en-US": "Ghidra, IDA, Hopper.",
+       "vi-VN": "như Ghidra, IDA, Hopper,",
+       "ja-JP": "Ghidra、IDA、Hopperなどです。"
+      },
+      "unit": "s04.1"
+     },
+     {
+      "start": 137.56,
+      "end": 141.747,
+      "text": {
+       "zh-TW": "能把機器指令反編譯成接近人類可讀的程式碼。",
+       "en-US": "They decompile machine instructions into code that's close to human-readable.",
+       "vi-VN": "chúng dịch ngược lệnh máy thành mã gần như con người đọc được.",
+       "ja-JP": "機械命令を、人が読める形に近いコードへ逆コンパイルできます。"
+      },
+      "unit": "s04.2"
+     },
+     {
+      "start": 142.789,
+      "end": 149.259,
+      "text": {
+       "zh-TW": "可是反編譯出來的程式碼，到處是沒有名字的變數和片段，還得一行行驗證。",
+       "en-US": "But decompiled code is full of nameless variables and fragments, and still has to be verified line by line.",
+       "vi-VN": "Nhưng mã dịch ngược đầy những biến không tên và mảnh rời rạc, vẫn phải kiểm chứng từng dòng.",
+       "ja-JP": "ただ、逆コンパイルされたコードは名前のない変数や断片だらけで、一行ずつ検証が必要です。"
+      },
+      "unit": "s04.3"
+     },
+     {
+      "start": 150.343,
+      "end": 153.458,
+      "text": {
+       "zh-TW": "但難的從來不是工具，而是判斷：",
+       "en-US": "But the hard part was never the tools; it's judgment:",
+       "vi-VN": "Nhưng phần khó chưa bao giờ là công cụ, mà là phán đoán:",
+       "ja-JP": "ただ、難しいのは道具ではなく判断です。"
+      },
+      "unit": "s04.4"
+     },
+     {
+      "start": 154.477,
+      "end": 157.899,
+      "text": {
+       "zh-TW": "上千個函式攤在眼前，該從哪一個下刀？",
+       "en-US": "with thousands of functions laid out, where do you make the first cut?",
+       "vi-VN": "hàng nghìn hàm bày ra trước mắt, nên bắt đầu từ hàm nào?",
+       "ja-JP": "何千もの関数が並ぶ中、どこから切り込むべきか。"
+      },
+      "unit": "s04.5"
+     },
+     {
+      "start": 158.773,
+      "end": 162.322,
+      "text": {
+       "zh-TW": "過去，這份判斷只存在少數專家的經驗裡。",
+       "en-US": "Until now, that judgment lived only in the experience of a few experts.",
+       "vi-VN": "Trước đây, phán đoán ấy chỉ nằm trong kinh nghiệm của số ít chuyên gia.",
+       "ja-JP": "これまで、その判断は一部の専門家の経験の中にしかありませんでした。"
+      },
+      "unit": "s04.6"
+     },
+     {
+      "start": 165.301,
+      "end": 169.915,
+      "text": {
+       "zh-TW": "REA 做的事，是把這些老工具直接接給 AI 代理人。",
+       "en-US": "What REA does is wire these veteran tools straight into an AI agent.",
+       "vi-VN": "Việc REA làm là nối thẳng các công cụ kỳ cựu này vào tác tử AI.",
+       "ja-JP": "REAがするのは、こうした老舗ツールをAIエージェントに直接つなぐことです。"
+      },
+      "unit": "s05.0"
+     },
+     {
+      "start": 170.734,
+      "end": 172.304,
+      "text": {
+       "zh-TW": "你可以把它拆成三層。",
+       "en-US": "You can split it into three layers.",
+       "vi-VN": "Bạn có thể tách nó thành ba tầng.",
+       "ja-JP": "これは3つの層に分けられます。"
+      },
+      "unit": "s05.1"
+     },
+     {
+      "start": 172.986,
+      "end": 175.649,
+      "text": {
+       "zh-TW": "最上層是代理人，像 Claude Code 或 Codex，",
+       "en-US": "On top is the agent, like Claude Code or Codex,",
+       "vi-VN": "Tầng trên cùng là tác tử, như Claude Code hay Codex,",
+       "ja-JP": "一番上はClaude CodeやCodexのようなエージェントで、"
+      },
+      "unit": "s05.2"
+     },
+     {
+      "start": 175.865,
+      "end": 179.285,
+      "text": {
+       "zh-TW": "負責理解需求、規劃下一步。",
+       "en-US": "which understands what you want and plans the next step.",
+       "vi-VN": "lo hiểu yêu cầu và lên kế hoạch bước tiếp theo.",
+       "ja-JP": "要望を理解し、次の一手を計画します。"
+      },
+      "unit": "s05.3"
+     },
+     {
+      "start": 180.196,
+      "end": 183.978,
+      "text": {
+       "zh-TW": "中間是 REA：它用 MCP 提供分析工具，",
+       "en-US": "In the middle is REA: it offers analysis tools through MCP,",
+       "vi-VN": "Ở giữa là REA: nó cung cấp công cụ phân tích qua MCP,",
+       "ja-JP": "真ん中がREA。MCPで解析ツールを提供し、"
+      },
+      "unit": "s05.4"
+     },
+     {
+      "start": 184.345,
+      "end": 186.901,
+      "text": {
+       "zh-TW": "再附一份 Skill，像辦案手冊，",
+       "en-US": "plus a Skill that works like an investigator's handbook,",
+       "vi-VN": "kèm một Skill giống như sổ tay điều tra,",
+       "ja-JP": "さらに捜査マニュアルのようなSkillを添えて、"
+      },
+      "unit": "s05.5"
+     },
+     {
+      "start": 187.403,
+      "end": 189.785,
+      "text": {
+       "zh-TW": "教代理人怎麼查、怎麼整理證據。",
+       "en-US": "teaching the agent how to investigate and how to organize evidence.",
+       "vi-VN": "dạy tác tử cách điều tra và sắp xếp bằng chứng.",
+       "ja-JP": "調べ方や証拠のまとめ方をエージェントに教えます。"
+      },
+      "unit": "s05.6"
+     },
+     {
+      "start": 190.569,
+      "end": 194.115,
+      "text": {
+       "zh-TW": "最底層，才是 Ghidra、Hopper 這些老牌引擎。",
+       "en-US": "At the bottom are the veteran engines, like Ghidra and Hopper.",
+       "vi-VN": "Tầng dưới cùng mới là các công cụ lâu đời như Ghidra, Hopper.",
+       "ja-JP": "一番下に、GhidraやHopperといった老舗エンジンがあります。"
+      },
+      "unit": "s05.7"
+     },
+     {
+      "start": 194.97,
+      "end": 198.011,
+      "text": {
+       "zh-TW": "代理人提問，REA 指揮引擎去拆，",
+       "en-US": "The agent asks, REA directs the engines to take things apart,",
+       "vi-VN": "Tác tử đặt câu hỏi, REA điều khiển công cụ mổ xẻ,",
+       "ja-JP": "エージェントが問い、REAがエンジンに分解を指示し、"
+      },
+      "unit": "s05.8"
+     },
+     {
+      "start": 198.437,
+      "end": 203.734,
+      "text": {
+       "zh-TW": "再把證據帶回來：檔案雜湊、程式位置，還有它不確定的地方。",
+       "en-US": "and brings the evidence back: file hashes, code locations, and what it isn't sure about.",
+       "vi-VN": "rồi mang bằng chứng về: mã băm tệp, vị trí mã, và cả những điểm nó chưa chắc chắn.",
+       "ja-JP": "証拠を持ち帰ります。ファイルのハッシュ、コードの位置、そして確信の持てない点も。"
+      },
+      "unit": "s05.9"
+     },
+     {
+      "start": 206.728,
+      "end": 209.362,
+      "text": {
+       "zh-TW": "實際調查時，它是一個迴圈：",
+       "en-US": "In practice, the investigation is a loop:",
+       "vi-VN": "Khi điều tra thực tế, đó là một vòng lặp:",
+       "ja-JP": "実際の調査はループになっています。"
+      },
+      "unit": "s06.0"
+     },
+     {
+      "start": 210.169,
+      "end": 216.008,
+      "text": {
+       "zh-TW": "先檢查目標，順著線索追，動手實作，再跑起來和原版比對；",
+       "en-US": "inspect the target, follow the leads, build it, then run it and compare with the original;",
+       "vi-VN": "kiểm tra mục tiêu, lần theo manh mối, bắt tay làm, rồi chạy thử và so với bản gốc;",
+       "ja-JP": "対象を調べ、手がかりを追い、実装して動かし、元のアプリと比べます。"
+      },
+      "unit": "s06.1"
+     },
+     {
+      "start": 217.002,
+      "end": 218.599,
+      "text": {
+       "zh-TW": "對不上，就回頭補查。",
+       "en-US": "if it doesn't match, go back and dig further.",
+       "vi-VN": "nếu không khớp, quay lại điều tra thêm.",
+       "ja-JP": "合わなければ、戻って調べ直します。"
+      },
+      "unit": "s06.2"
+     },
+     {
+      "start": 219.901,
+      "end": 221.75,
+      "text": {
+       "zh-TW": "目標不同，查法也不同：",
+       "en-US": "Different targets need different methods:",
+       "vi-VN": "Mục tiêu khác nhau thì cách điều tra cũng khác:",
+       "ja-JP": "対象によって調べ方も変わります。"
+      },
+      "unit": "s06.3"
+     },
+     {
+      "start": 222.67,
+      "end": 225.428,
+      "text": {
+       "zh-TW": "網頁看頁面結構和網路請求；",
+       "en-US": "for websites, look at the page structure and network requests;",
+       "vi-VN": "với trang web, xem cấu trúc trang và các yêu cầu mạng;",
+       "ja-JP": "Webならページ構造と通信リクエスト、"
+      },
+      "unit": "s06.4"
+     },
+     {
+      "start": 226.224,
+      "end": 228.859,
+      "text": {
+       "zh-TW": "Electron 桌面 App 看模組之間的呼叫；",
+       "en-US": "for Electron desktop apps, the calls between modules;",
+       "vi-VN": "với ứng dụng máy tính Electron, xem lời gọi giữa các mô-đun;",
+       "ja-JP": "Electronのデスクトップアプリならモジュール間の呼び出し、"
+      },
+      "unit": "s06.5"
+     },
+     {
+      "start": 229.739,
+      "end": 232.295,
+      "text": {
+       "zh-TW": "原生程式，才需要動用反編譯。",
+       "en-US": "only native programs call for decompilation.",
+       "vi-VN": "chỉ chương trình gốc mới cần đến dịch ngược mã.",
+       "ja-JP": "逆コンパイルが必要なのはネイティブプログラムだけです。"
+      },
+      "unit": "s06.6"
+     },
+     {
+      "start": 233.84,
+      "end": 237.876,
+      "text": {
+       "zh-TW": "拿筆記軟體的搜尋來說，截圖只看得到搜尋框；",
+       "en-US": "Take a notes app's search: a screenshot only shows the search box;",
+       "vi-VN": "Lấy ví dụ tìm kiếm trong ứng dụng ghi chú: ảnh chụp chỉ thấy ô tìm kiếm;",
+       "ja-JP": "メモアプリの検索なら、スクリーンショットで分かるのは検索欄だけ。"
+      },
+      "unit": "s06.7"
+     },
+     {
+      "start": 238.568,
+      "end": 242.48,
+      "text": {
+       "zh-TW": "比對標題還是內文、有沒有分詞、怎麼排序，",
+       "en-US": "whether it matches titles or body text, whether it tokenizes, how it ranks:",
+       "vi-VN": "khớp tiêu đề hay nội dung, có tách từ không, xếp hạng thế nào —",
+       "ja-JP": "タイトルか本文か、分かち書きの有無、並び順は、"
+      },
+      "unit": "s06.8"
+     },
+     {
+      "start": 242.961,
+      "end": 244.666,
+      "text": {
+       "zh-TW": "得靠調查才挖得出來。",
+       "en-US": "only investigation digs that out.",
+       "vi-VN": "phải điều tra mới biết.",
+       "ja-JP": "調べて初めて分かります。"
+      },
+      "unit": "s06.8"
+     },
+     {
+      "start": 245.292,
+      "end": 250.809,
+      "text": {
+       "zh-TW": "需求就從「做個搜尋」，升級成「照這些驗證過的規則做」。",
+       "en-US": "The request upgrades from \"build a search\" to \"build it by these verified rules.\"",
+       "vi-VN": "Yêu cầu khi đó nâng cấp từ “làm một ô tìm kiếm” thành “làm theo những quy tắc đã kiểm chứng này”.",
+       "ja-JP": "依頼は「検索を作って」から「検証済みのこのルール通りに作って」へと変わります。"
+      },
+      "unit": "s06.9"
+     },
+     {
+      "start": 253.847,
+      "end": 258.334,
+      "text": {
+       "zh-TW": "同樣是復刻筆記軟體的搜尋，我們並排看三種做法。",
+       "en-US": "Same task, copying a notes app's search: let's compare three approaches side by side.",
+       "vi-VN": "Cùng một việc là tái tạo tính năng tìm kiếm của ứng dụng ghi chú, hãy so sánh ba cách.",
+       "ja-JP": "同じ「メモアプリの検索を再現する」で、3つのやり方を並べてみます。"
+      },
+      "unit": "s07.0"
+     },
+     {
+      "start": 259.175,
+      "end": 264.712,
+      "text": {
+       "zh-TW": "第一種，只給 AI 截圖，讓它自己推理：最快，但細節全靠猜。",
+       "en-US": "One: give the AI only screenshots and let it reason. Fastest, but every detail is a guess.",
+       "vi-VN": "Một: chỉ đưa ảnh chụp cho AI tự suy luận. Nhanh nhất, nhưng chi tiết đều là đoán.",
+       "ja-JP": "1つ目は、AIにスクリーンショットだけ渡す方法。最速ですが、細部は推測頼みです。"
+      },
+      "unit": "s07.1"
+     },
+     {
+      "start": 265.523,
+      "end": 271.6,
+      "text": {
+       "zh-TW": "第二種，AI 加上 REA：慢一些，但每一步都有證據可查。",
+       "en-US": "Two: AI plus REA. A bit slower, but every step has evidence you can check.",
+       "vi-VN": "Hai: AI kết hợp REA. Chậm hơn một chút, nhưng bước nào cũng có bằng chứng.",
+       "ja-JP": "2つ目はAIとREA。少し遅いものの、どの段階にも確かめられる証拠があります。"
+      },
+      "unit": "s07.2"
+     },
+     {
+      "start": 272.61,
+      "end": 278.497,
+      "text": {
+       "zh-TW": "第三種，人工用逆向工具：最深入，可是門檻最高、最花時間。",
+       "en-US": "Three: a human with reverse-engineering tools. The deepest, but the hardest to learn and the slowest.",
+       "vi-VN": "Ba: con người dùng công cụ dịch ngược. Sâu nhất, nhưng khó học nhất và tốn thời gian nhất.",
+       "ja-JP": "3つ目は人が解析ツールを使う方法。最も深いですが、ハードルも時間も最大です。"
+      },
+      "unit": "s07.3"
+     },
+     {
+      "start": 280.011,
+      "end": 283.65,
+      "text": {
+       "zh-TW": "有人做過對照：沒裝 REA 的那組先做完，",
+       "en-US": "In one comparison, the group without REA finished first,",
+       "vi-VN": "Có người đã đối chiếu: nhóm không cài REA xong trước,",
+       "ja-JP": "ある比較では、REAなしの組が先に終わり、"
+      },
+      "unit": "s07.4"
+     },
+     {
+      "start": 284.208,
+      "end": 286.533,
+      "text": {
+       "zh-TW": "裝了的那組成品明顯更好。",
+       "en-US": "but the group with REA built a clearly better result.",
+       "vi-VN": "nhưng nhóm có REA cho sản phẩm tốt hơn rõ rệt.",
+       "ja-JP": "REAありの組の方が明らかに良い結果でした。"
+      },
+      "unit": "s07.4"
+     },
+     {
+      "start": 287.644,
+      "end": 291.571,
+      "text": {
+       "zh-TW": "不過，這是參考影片引述的觀察，不是嚴格的評測。",
+       "en-US": "That's an observation cited in the reference video, not a rigorous benchmark.",
+       "vi-VN": "Tuy vậy, đó là quan sát được video tham khảo dẫn lại, không phải đánh giá nghiêm ngặt.",
+       "ja-JP": "ただし、参考動画が紹介した観察で、厳密な評価ではありません。"
+      },
+      "unit": "s07.5"
+     },
+     {
+      "start": 292.53,
+      "end": 295.936,
+      "text": {
+       "zh-TW": "所以，熟悉的小功能，截圖可能就夠；",
+       "en-US": "So for a familiar small feature, screenshots may be enough;",
+       "vi-VN": "Vì vậy, với tính năng nhỏ quen thuộc, ảnh chụp có thể là đủ;",
+       "ja-JP": "つまり、よく知る小さな機能ならスクリーンショットで足り、"
+      },
+      "unit": "s07.6"
+     },
+     {
+      "start": 296.625,
+      "end": 300.14,
+      "text": {
+       "zh-TW": "想知道看不見的規則，才值得動用 REA。",
+       "en-US": "reach for REA when you need the rules you can't see.",
+       "vi-VN": "khi cần những quy tắc không nhìn thấy, mới đáng dùng REA.",
+       "ja-JP": "見えないルールを知りたいときにこそREAの出番です。"
+      },
+      "unit": "s07.6"
+     },
+     {
+      "start": 303.053,
+      "end": 309.49,
+      "text": {
+       "zh-TW": "安裝很簡單：執行 npx rea-agents setup，",
+       "en-US": "Installing is simple: run npx rea-agents setup,",
+       "vi-VN": "Cài đặt rất đơn giản: chạy npx rea-agents setup,",
+       "ja-JP": "インストールは簡単。npx rea-agents setupを実行するか、"
+      },
+      "unit": "s08.0"
+     },
+     {
+      "start": 310.382,
+      "end": 314.258,
+      "text": {
+       "zh-TW": "或者乾脆把 repo 連結丟給你的代理人，請它自己裝。",
+       "en-US": "or just hand the repo link to your agent and ask it to install REA itself.",
+       "vi-VN": "hoặc đưa luôn đường dẫn repo cho tác tử và nhờ nó tự cài.",
+       "ja-JP": "リポジトリのリンクをエージェントに渡して、インストールを任せるだけです。"
+      },
+      "unit": "s08.1"
+     },
+     {
+      "start": 315.729,
+      "end": 322.362,
+      "text": {
+       "zh-TW": "我們實際跑了一次：用 REA 6.5 版，分析一個自己寫的迷你筆記 App。",
+       "en-US": "We tried it ourselves: REA 6.5 analyzing a tiny notes app we wrote.",
+       "vi-VN": "Chúng tôi đã chạy thử: dùng REA 6.5 phân tích một ứng dụng ghi chú nhỏ tự viết.",
+       "ja-JP": "実際に試しました。REA 6.5で、自作の小さなメモアプリを解析です。"
+      },
+      "unit": "s08.2"
+     },
+     {
+      "start": 323.283,
+      "end": 325.358,
+      "text": {
+       "zh-TW": "它自動串出整條呼叫鏈：",
+       "en-US": "It traced the whole call chain on its own:",
+       "vi-VN": "Nó tự lần ra cả chuỗi lời gọi:",
+       "ja-JP": "呼び出しの流れを自動でたどりました。"
+      },
+      "unit": "s08.3"
+     },
+     {
+      "start": 325.986,
+      "end": 331.439,
+      "text": {
+       "zh-TW": "從網頁端的搜尋，經過 IPC 頻道，到主程序的搜尋函式。",
+       "en-US": "from the search in the web page, through the IPC channel, to the search function in the main process.",
+       "vi-VN": "từ ô tìm kiếm phía giao diện, qua kênh IPC, đến hàm tìm kiếm ở tiến trình chính.",
+       "ja-JP": "画面側の検索からIPCチャネルを経て、メインプロセスの検索関数まで。"
+      },
+      "unit": "s08.3"
+     },
+     {
+      "start": 332.223,
+      "end": 335.865,
+      "text": {
+       "zh-TW": "還主動附上限制：程式碼沒有被執行，",
+       "en-US": "It also listed its limits: the code was never executed,",
+       "vi-VN": "Nó còn tự ghi rõ giới hạn: mã chưa hề được chạy,",
+       "ja-JP": "限界も自ら添えました。コードは実行していない、"
+      },
+      "unit": "s08.4"
+     },
+     {
+      "start": 336.428,
+      "end": 338.104,
+      "text": {
+       "zh-TW": "找不到不代表不存在。",
+       "en-US": "and not finding something doesn't prove it's absent.",
+       "vi-VN": "và không tìm thấy không có nghĩa là không tồn tại.",
+       "ja-JP": "見つからないことは存在しない証明ではない、と。"
+      },
+      "unit": "s08.4"
+     },
+     {
+      "start": 339.631,
+      "end": 344.178,
+      "text": {
+       "zh-TW": "參考影片則讓 AI 復刻 Mac 的備忘錄，只要筆記功能。",
+       "en-US": "The reference video had AI recreate the Mac Notes app, with note-taking features only.",
+       "vi-VN": "Video tham khảo thì để AI tái tạo ứng dụng Ghi chú của Mac, chỉ phần ghi chú.",
+       "ja-JP": "参考動画では、AIにMacのメモアプリをメモ機能だけ再現させました。"
+      },
+      "unit": "s08.5"
+     },
+     {
+      "start": 344.994,
+      "end": 350.532,
+      "text": {
+       "zh-TW": "做出來的 App 能新增、釘選、分資料夾、搜尋和復原；",
+       "en-US": "The result could create, pin, organize into folders, search and undo deletes;",
+       "vi-VN": "Ứng dụng làm ra có thể tạo, ghim, chia thư mục, tìm kiếm và khôi phục;",
+       "ja-JP": "できたアプリは、作成、ピン留め、フォルダ分け、検索、削除の取り消しが動きました。"
+      },
+      "unit": "s08.6"
+     },
+     {
+      "start": 351.384,
+      "end": 355.501,
+      "text": {
+       "zh-TW": "但目標刻意挑得簡單，看不出 REA 能挖多深。",
+       "en-US": "but the target was deliberately simple, so it doesn't show how deep REA can dig.",
+       "vi-VN": "nhưng mục tiêu được chọn đơn giản có chủ ý, nên chưa thấy REA đào sâu được đến đâu.",
+       "ja-JP": "ただし対象はわざと簡単なものなので、REAがどこまで深く掘れるかは分かりません。"
+      },
+      "unit": "s08.7"
+     },
+     {
+      "start": 358.446,
+      "end": 360.702,
+      "text": {
+       "zh-TW": "REA 也有拆不到的地方。",
+       "en-US": "There are also things REA can't take apart.",
+       "vi-VN": "REA cũng có những chỗ không mổ xẻ được.",
+       "ja-JP": "REAにも分解できないものがあります。"
+      },
+      "unit": "s09.0"
+     },
+     {
+      "start": 361.483,
+      "end": 363.651,
+      "text": {
+       "zh-TW": "很多服務的核心在遠端伺服器：",
+       "en-US": "Many services keep their core on remote servers:",
+       "vi-VN": "Nhiều dịch vụ đặt phần lõi trên máy chủ từ xa:",
+       "ja-JP": "多くのサービスは中核がリモートのサーバーにあり、"
+      },
+      "unit": "s09.1"
+     },
+     {
+      "start": 364.456,
+      "end": 367.803,
+      "text": {
+       "zh-TW": "你抓得到請求和回應，拿不到後端程式。",
+       "en-US": "you can capture requests and responses, but not the backend code.",
+       "vi-VN": "bạn bắt được yêu cầu và phản hồi, nhưng không lấy được mã phía máy chủ.",
+       "ja-JP": "リクエストと応答は取れても、バックエンドのコードは手に入りません。"
+      },
+      "unit": "s09.1"
+     },
+     {
+      "start": 368.753,
+      "end": 374.722,
+      "text": {
+       "zh-TW": "像跨裝置同步，畫面好做，斷線、衝突怎麼處理，才是真功夫。",
+       "en-US": "Take cross-device sync: the screens are easy; handling offline edits and conflicts is the real work.",
+       "vi-VN": "Như đồng bộ giữa thiết bị: giao diện thì dễ, xử lý mất mạng và xung đột mới là công phu thật.",
+       "ja-JP": "端末間の同期なら、画面は簡単でも、オフラインや競合の処理こそが本当の腕の見せ所です。"
+      },
+      "unit": "s09.2"
+     },
+     {
+      "start": 375.753,
+      "end": 379.773,
+      "text": {
+       "zh-TW": "重度混淆或加殼的程式，推論會變成猜測；",
+       "en-US": "With heavily obfuscated or packed programs, inference turns into guesswork;",
+       "vi-VN": "Với chương trình bị làm rối hoặc đóng gói nặng, suy luận sẽ thành phỏng đoán;",
+       "ja-JP": "強く難読化・パックされたプログラムでは、推論は当て推量になります。"
+      },
+      "unit": "s09.3"
+     },
+     {
+      "start": 380.732,
+      "end": 384.555,
+      "text": {
+       "zh-TW": "而 IDA、Hopper 這些商業工具要合法授權，",
+       "en-US": "and commercial tools like IDA and Hopper need proper licenses,",
+       "vi-VN": "còn công cụ thương mại như IDA, Hopper cần giấy phép hợp lệ,",
+       "ja-JP": "またIDAやHopperなどの商用ツールは正規ライセンスが必要で、"
+      },
+      "unit": "s09.4"
+     },
+     {
+      "start": 385.188,
+      "end": 388.098,
+      "text": {
+       "zh-TW": "分析的對象也要是你有權研究的軟體。",
+       "en-US": "and the software you analyze must be yours to study.",
+       "vi-VN": "và phần mềm phân tích phải là thứ bạn có quyền nghiên cứu.",
+       "ja-JP": "解析対象も調べる権利のあるソフトに限られます。"
+      },
+      "unit": "s09.4"
+     },
+     {
+      "start": 389.111,
+      "end": 395.165,
+      "text": {
+       "zh-TW": "還有，下載要認明官方來源：爆紅之後，就出現過夾帶木馬的山寨版。",
+       "en-US": "And download only from official sources: after it went viral, fake copies carrying trojans appeared.",
+       "vi-VN": "Ngoài ra, chỉ tải từ nguồn chính thức: sau khi nổi tiếng, đã xuất hiện bản nhái chứa trojan.",
+       "ja-JP": "それに、入手は公式からだけに。話題になった後、トロイの木馬入りの偽物が出回りました。"
+      },
+      "unit": "s09.5"
+     },
+     {
+      "start": 398.146,
+      "end": 400.44,
+      "text": {
+       "zh-TW": "這波熱潮，留下三個訊號。",
+       "en-US": "This wave of hype leaves three signals.",
+       "vi-VN": "Làn sóng này để lại ba tín hiệu.",
+       "ja-JP": "このブームは3つのシグナルを残しました。"
+      },
+      "unit": "s10.0"
+     },
+     {
+      "start": 401.508,
+      "end": 405.115,
+      "text": {
+       "zh-TW": "第一，舊工具接上代理人，是質變：",
+       "en-US": "First, connecting old tools to agents is a change in kind:",
+       "vi-VN": "Thứ nhất, nối công cụ cũ vào tác tử là thay đổi về chất:",
+       "ja-JP": "1つ目、古い道具とエージェントの接続は質的な変化。"
+      },
+      "unit": "s10.1"
+     },
+     {
+      "start": 405.951,
+      "end": 409.109,
+      "text": {
+       "zh-TW": "工具存在，不等於一般人用得起來。",
+       "en-US": "a tool existing doesn't mean ordinary people can use it.",
+       "vi-VN": "công cụ tồn tại không có nghĩa người thường dùng được.",
+       "ja-JP": "道具があることと、誰でも使えることは別です。"
+      },
+      "unit": "s10.1"
+     },
+     {
+      "start": 410.277,
+      "end": 413.325,
+      "text": {
+       "zh-TW": "第二，參考物是最好的規格書；",
+       "en-US": "Second, a reference product is the best spec;",
+       "vi-VN": "Thứ hai, sản phẩm tham chiếu là bản đặc tả tốt nhất;",
+       "ja-JP": "2つ目、お手本は最高の仕様書。"
+      },
+      "unit": "s10.2"
+     },
+     {
+      "start": 414.699,
+      "end": 417.358,
+      "text": {
+       "zh-TW": "但要做多少，邊界還是得自己畫。",
+       "en-US": "but how much to build is still your call.",
+       "vi-VN": "nhưng làm đến đâu thì bạn vẫn phải tự vạch ranh giới.",
+       "ja-JP": "ただし、どこまで作るかの線引きは自分で決めること。"
+      },
+      "unit": "s10.2"
+     },
+     {
+      "start": 418.256,
+      "end": 423.973,
+      "text": {
+       "zh-TW": "這也適用在寫企劃：給 AI 一份好範本，比給一堆形容詞有用。",
+       "en-US": "The same goes for writing proposals: giving AI one good template beats a pile of adjectives.",
+       "vi-VN": "Điều này cũng đúng khi viết kế hoạch: đưa AI một bản mẫu tốt hiệu quả hơn cả đống tính từ.",
+       "ja-JP": "企画書でも同じで、AIには形容詞を並べるより、良いお手本を一つ渡す方が効きます。"
+      },
+      "unit": "s10.3"
+     },
+     {
+      "start": 425.196,
+      "end": 426.823,
+      "text": {
+       "zh-TW": "第三，這是推測：",
+       "en-US": "Third, and this is a guess:",
+       "vi-VN": "Thứ ba, đây là suy đoán:",
+       "ja-JP": "3つ目は推測ですが、"
+      },
+      "unit": "s10.4"
+     },
+     {
+      "start": 427.633,
+      "end": 432.305,
+      "text": {
+       "zh-TW": "主流的程式代理人，很可能遲早內建類似的能力。",
+       "en-US": "mainstream coding agents will likely build in similar abilities sooner or later.",
+       "vi-VN": "các tác tử lập trình phổ biến nhiều khả năng sớm muộn sẽ tích hợp năng lực tương tự.",
+       "ja-JP": "主要なコーディングエージェントもいずれ似た機能を内蔵するでしょう。"
+      },
+      "unit": "s10.4"
+     },
+     {
+      "start": 435.423,
+      "end": 438.43,
+      "text": {
+       "zh-TW": "那軟體公司的護城河，會消失嗎？",
+       "en-US": "So, will software companies lose their moat?",
+       "vi-VN": "Vậy hào lũy của các công ty phần mềm có biến mất không?",
+       "ja-JP": "では、ソフトウェア企業の堀は消えるのでしょうか。"
+      },
+      "unit": "s11.0"
+     },
+     {
+      "start": 439.437,
+      "end": 442.774,
+      "text": {
+       "zh-TW": "單一功能的小工具，確實越來越容易被復刻。",
+       "en-US": "Small single-feature tools are indeed getting easier to copy.",
+       "vi-VN": "Các công cụ nhỏ một tính năng quả thật ngày càng dễ bị sao chép.",
+       "ja-JP": "単機能の小さなツールは、確かにますます再現しやすくなっています。"
+      },
+      "unit": "s11.1"
+     },
+     {
+      "start": 443.464,
+      "end": 446.269,
+      "text": {
+       "zh-TW": "但功能只是冰山露出水面的一角；",
+       "en-US": "But features are just the tip of the iceberg;",
+       "vi-VN": "Nhưng tính năng chỉ là phần nổi của tảng băng;",
+       "ja-JP": "でも、機能は氷山の一角にすぎません。"
+      },
+      "unit": "s11.2"
+     },
+     {
+      "start": 446.983,
+      "end": 451.333,
+      "text": {
+       "zh-TW": "水面下還有同步架構、舊資料相容、客服、權限，",
+       "en-US": "below the surface are sync infrastructure, compatibility with old data, support, permissions,",
+       "vi-VN": "bên dưới là hạ tầng đồng bộ, tương thích dữ liệu cũ, hỗ trợ khách hàng, phân quyền,",
+       "ja-JP": "水面下には同期の仕組み、古いデータとの互換性、サポート、権限管理、"
+      },
+      "unit": "s11.3"
+     },
+     {
+      "start": 451.72,
+      "end": 454.66,
+      "text": {
+       "zh-TW": "以及使用者累積多年的資料。",
+       "en-US": "and years of users' data.",
+       "vi-VN": "và dữ liệu người dùng tích lũy nhiều năm.",
+       "ja-JP": "そして長年蓄積されたユーザーのデータがあります。"
+      },
+      "unit": "s11.3"
+     },
+     {
+      "start": 455.61,
+      "end": 458.954,
+      "text": {
+       "zh-TW": "對個人來說，量身打造一個工具變得很便宜；",
+       "en-US": "For individuals, building a tool tailored just for you has become cheap;",
+       "vi-VN": "Với cá nhân, tự may đo một công cụ cho riêng mình đã trở nên rẻ;",
+       "ja-JP": "個人にとって、自分専用のツールを作るのはぐっと安くなりました。"
+      },
+      "unit": "s11.4"
+     },
+     {
+      "start": 459.539,
+      "end": 463.519,
+      "text": {
+       "zh-TW": "要做成賣給大眾的產品，仍然是一場長期營運的硬仗。",
+       "en-US": "turning it into a product for the public is still a long, hard operating battle.",
+       "vi-VN": "biến nó thành sản phẩm bán cho đại chúng vẫn là cuộc chiến vận hành lâu dài và gian nan.",
+       "ja-JP": "それを一般向けの製品にするのは、今も長期運営という厳しい戦いです。"
+      },
+      "unit": "s11.5"
+     },
+     {
+      "start": 464.375,
+      "end": 467.155,
+      "text": {
+       "zh-TW": "從點子到雛形的距離被大幅拉近，",
+       "en-US": "The distance from idea to prototype has shrunk dramatically,",
+       "vi-VN": "Khoảng cách từ ý tưởng đến bản mẫu đã rút ngắn rất nhiều,",
+       "ja-JP": "アイデアから試作品までの距離は大きく縮みましたが、"
+      },
+      "unit": "s11.6"
+     },
+     {
+      "start": 467.528,
+      "end": 470.486,
+      "text": {
+       "zh-TW": "但雛形到產品，還是軟體工程的本質。",
+       "en-US": "but prototype to product is still the core of software engineering.",
+       "vi-VN": "nhưng từ bản mẫu đến sản phẩm vẫn là bản chất của kỹ thuật phần mềm.",
+       "ja-JP": "試作品から製品までは、今もソフトウェア工学の本質です。"
+      },
+      "unit": "s11.6"
+     },
+     {
+      "start": 471.3,
+      "end": 475.064,
+      "text": {
+       "zh-TW": "所以，使用 REA 時，目標越聚焦越好。",
+       "en-US": "So when you use REA, the more focused your goal, the better.",
+       "vi-VN": "Vì vậy, khi dùng REA, mục tiêu càng tập trung càng tốt.",
+       "ja-JP": "だからREAを使うときは、目標を絞るほど効果的です。"
+      },
+      "unit": "s11.7"
+     }
+    ]
+   }
+  },
+  "en-US": {
+   "mix": "audio/en-US.mp3",
+   "scenes": [
+    {
+     "id": "s01",
+     "section": "origin",
+     "start": 0.0,
+     "end": 32.855,
+     "title": "一個專案，二十五萬顆星",
+     "screen": "2026 年 10 月爆紅・起點 2026-04-14",
+     "objective": "用現象引起好奇：REA 是什麼、紅到什麼程度，並點出起點日期",
+     "narration": "In October 2026, an open-source project suddenly blew up on GitHub. By October 15, it had passed two hundred fifty thousand stars. It's called REA, short for Reverse Engineer Anything: reverse engineering, applied to anything. People used it to take apart an old game's mechanics and rewrite them in Rust; others brought the first level of a classic shooter to the web. And its story begins on April 14, 2026.",
+     "kind": "s01",
+     "spoken_date": "April 14, 2026",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 0.0,
+       "end": 1.073
+      },
+      {
+       "name": "b0",
+       "start": 1.073,
+       "end": 7.397
+      },
+      {
+       "name": "b1",
+       "start": 7.397,
+       "end": 12.346
+      },
+      {
+       "name": "b2",
+       "start": 12.346,
+       "end": 16.784
+      },
+      {
+       "name": "b3",
+       "start": 16.784,
+       "end": 19.744
+      },
+      {
+       "name": "b4",
+       "start": 19.744,
+       "end": 24.229
+      },
+      {
+       "name": "b5",
+       "start": 24.229,
+       "end": 27.584
+      },
+      {
+       "name": "b6",
+       "start": 27.584,
+       "end": 32.855
+      }
+     ],
+     "qa_times": [
+      4.835,
+      10.472,
+      15.165
+     ]
+    },
+    {
+     "id": "s02",
+     "section": "origin",
+     "start": 32.855,
+     "end": 78.39,
+     "title": "一份 Hopper 外掛的身世",
+     "screen": "2026-04-14 第一次提交 → 2026-07-12 改名 REA",
+     "objective": "認識 REA 的起源與時間軸，理解它爆紅的原因",
+     "narration": "But REA didn't appear overnight. Its first commit was on April 14, 2026. Back then it was called betterBinaryMCP, a small plugin that let AI drive the Hopper disassembler. On July 12, it was renamed REA and published to npm, and what it could analyze grew from native programs to web, desktop and mobile apps. In early October it hit the trending charts, with over 2,600 commits in that month alone. It took off because the pitch fits in one line: see a feature you like, and have AI take it apart for you; and it touched a nerve: if anything can be taken apart, can software companies still hold their ground?",
+     "kind": "s02",
+     "spoken_date": "April 14, 2026",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 32.855,
+       "end": 33.991
+      },
+      {
+       "name": "b0",
+       "start": 33.991,
+       "end": 36.322
+      },
+      {
+       "name": "b1",
+       "start": 36.322,
+       "end": 40.368
+      },
+      {
+       "name": "b2",
+       "start": 40.368,
+       "end": 43.604
+      },
+      {
+       "name": "b3",
+       "start": 43.604,
+       "end": 47.65
+      },
+      {
+       "name": "b4",
+       "start": 47.65,
+       "end": 52.375
+      },
+      {
+       "name": "b5",
+       "start": 52.375,
+       "end": 58.04
+      },
+      {
+       "name": "b6",
+       "start": 58.04,
+       "end": 64.281
+      },
+      {
+       "name": "b7",
+       "start": 64.281,
+       "end": 70.828
+      },
+      {
+       "name": "b8",
+       "start": 70.828,
+       "end": 78.39
+      }
+     ],
+     "qa_times": [
+      35.757,
+      38.945,
+      42.586
+     ]
+    },
+    {
+     "id": "s03",
+     "section": "principle",
+     "start": 78.39,
+     "end": 124.085,
+     "title": "為什麼成品看不出做法",
+     "screen": "逆向工程：從成品倒推回設計",
+     "objective": "理解逆向工程的定義：為什麼成品看不出做法，以及從成品倒推的方法",
+     "narration": "To understand REA, start with reverse engineering. Normally, engineers write source code, a compiler turns it into machine instructions, and it's packaged as an app. It's a one-way street: comments and variable names are thrown away during compilation. Reverse engineering works backwards from the finished product, studying its structure, how data flows, and how the logic works. It is commonly used for compatibility work, security reviews, and preserving discontinued software. It's like holding a mechanical watch with no blueprint: you can listen to it tick, press its buttons, or open the back and watch how the gears mesh.",
+     "kind": "s03",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 78.39,
+       "end": 79.43
+      },
+      {
+       "name": "b0",
+       "start": 79.43,
+       "end": 83.593
+      },
+      {
+       "name": "b1",
+       "start": 83.593,
+       "end": 86.544
+      },
+      {
+       "name": "b2",
+       "start": 86.544,
+       "end": 91.503
+      },
+      {
+       "name": "b3",
+       "start": 91.503,
+       "end": 97.991
+      },
+      {
+       "name": "b4",
+       "start": 97.991,
+       "end": 101.624
+      },
+      {
+       "name": "b5",
+       "start": 101.624,
+       "end": 106.633
+      },
+      {
+       "name": "b6",
+       "start": 106.633,
+       "end": 113.723
+      },
+      {
+       "name": "b7",
+       "start": 113.723,
+       "end": 117.216
+      },
+      {
+       "name": "b8",
+       "start": 117.216,
+       "end": 124.085
+      }
+     ],
+     "qa_times": [
+      82.112,
+      85.668,
+      89.623
+     ]
+    },
+    {
+     "id": "s04",
+     "section": "principle",
+     "start": 124.085,
+     "end": 157.62,
+     "title": "工具一直都在，難的是從哪下刀",
+     "screen": "Ghidra・IDA・Hopper 與專家的判斷",
+     "objective": "知道傳統逆向工具能做什麼，以及真正的門檻在判斷",
+     "narration": "Professional watch-opening tools have existed for years: Ghidra, IDA, Hopper. They decompile machine instructions into code that's close to human-readable. But decompiled code is full of nameless variables and fragments, and still has to be verified line by line. But the hard part was never the tools; it's judgment: with thousands of functions laid out, where do you make the first cut? Until now, that judgment lived only in the experience of a few experts.",
+     "kind": "s04",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 124.085,
+       "end": 125.191
+      },
+      {
+       "name": "b0",
+       "start": 125.191,
+       "end": 128.842
+      },
+      {
+       "name": "b1",
+       "start": 128.842,
+       "end": 131.569
+      },
+      {
+       "name": "b2",
+       "start": 131.569,
+       "end": 136.618
+      },
+      {
+       "name": "b3",
+       "start": 136.618,
+       "end": 144.416
+      },
+      {
+       "name": "b4",
+       "start": 144.416,
+       "end": 147.855
+      },
+      {
+       "name": "b5",
+       "start": 147.855,
+       "end": 151.893
+      },
+      {
+       "name": "b6",
+       "start": 151.893,
+       "end": 157.62
+      }
+     ],
+     "qa_times": [
+      127.617,
+      130.805,
+      134.694
+     ]
+    },
+    {
+     "id": "s05",
+     "section": "principle",
+     "start": 157.62,
+     "end": 203.835,
+     "title": "三層拆解圖",
+     "screen": "代理人提問、REA 轉譯、老工具動手",
+     "objective": "看懂代理人／REA／分析引擎三層如何分工，以及提問與證據的流向",
+     "narration": "What REA does is wire these veteran tools straight into an AI agent. You can split it into three layers. On top is the agent, like Claude Code or Codex, which understands what you want and plans the next step. In the middle is REA: it offers analysis tools through MCP, plus a Skill that works like an investigator's handbook, teaching the agent how to investigate and how to organize evidence. At the bottom are the veteran engines, like Ghidra and Hopper. The agent asks, REA directs the engines to take things apart, and brings the evidence back: file hashes, code locations, and what it isn't sure about.",
+     "kind": "s05",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 157.62,
+       "end": 158.726
+      },
+      {
+       "name": "b0",
+       "start": 158.726,
+       "end": 164.315
+      },
+      {
+       "name": "b1",
+       "start": 164.315,
+       "end": 166.762
+      },
+      {
+       "name": "b2",
+       "start": 166.762,
+       "end": 171.012
+      },
+      {
+       "name": "b3",
+       "start": 171.012,
+       "end": 174.768
+      },
+      {
+       "name": "b4",
+       "start": 174.768,
+       "end": 179.535
+      },
+      {
+       "name": "b5",
+       "start": 179.535,
+       "end": 183.126
+      },
+      {
+       "name": "b6",
+       "start": 183.126,
+       "end": 187.813
+      },
+      {
+       "name": "b7",
+       "start": 187.813,
+       "end": 192.391
+      },
+      {
+       "name": "b8",
+       "start": 192.391,
+       "end": 196.506
+      },
+      {
+       "name": "b9",
+       "start": 196.506,
+       "end": 203.835
+      }
+     ],
+     "qa_times": [
+      162.12,
+      166.138,
+      169.487
+     ]
+    },
+    {
+     "id": "s06",
+     "section": "principle",
+     "start": 203.835,
+     "end": 255.33,
+     "title": "一邊查，一邊對答案",
+     "screen": "調查迴圈與不同目標的查法",
+     "objective": "理解調查迴圈，並能說出不同目標各用什麼方法查",
+     "narration": "In practice, the investigation is a loop: inspect the target, follow the leads, build it, then run it and compare with the original; if it doesn't match, go back and dig further. Different targets need different methods: for websites, look at the page structure and network requests; for Electron desktop apps, the calls between modules; only native programs call for decompilation. Take a notes app's search: a screenshot only shows the search box; whether it matches titles or body text, whether it tokenizes, how it ranks: only investigation digs that out. The request upgrades from \"build a search\" to \"build it by these verified rules.\"",
+     "kind": "s06",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 203.835,
+       "end": 204.909
+      },
+      {
+       "name": "b0",
+       "start": 204.909,
+       "end": 208.431
+      },
+      {
+       "name": "b1",
+       "start": 208.431,
+       "end": 215.42
+      },
+      {
+       "name": "b2",
+       "start": 215.42,
+       "end": 219.277
+      },
+      {
+       "name": "b3",
+       "start": 219.277,
+       "end": 221.914
+      },
+      {
+       "name": "b4",
+       "start": 221.914,
+       "end": 225.917
+      },
+      {
+       "name": "b5",
+       "start": 225.917,
+       "end": 229.941
+      },
+      {
+       "name": "b6",
+       "start": 229.941,
+       "end": 233.864
+      },
+      {
+       "name": "b7",
+       "start": 233.864,
+       "end": 239.407
+      },
+      {
+       "name": "b8",
+       "start": 239.407,
+       "end": 248.024
+      },
+      {
+       "name": "b9",
+       "start": 248.024,
+       "end": 255.33
+      }
+     ],
+     "qa_times": [
+      207.27,
+      212.525,
+      217.948
+     ]
+    },
+    {
+     "id": "s07",
+     "section": "comparison",
+     "start": 255.33,
+     "end": 303.705,
+     "title": "三種復刻法並排",
+     "screen": "同一任務：復刻筆記軟體的搜尋",
+     "objective": "能比較三種復刻做法的速度、深度、證據與門檻，知道何時該用 REA",
+     "narration": "Same task, copying a notes app's search: let's compare three approaches side by side. One: give the AI only screenshots and let it reason. Fastest, but every detail is a guess. Two: AI plus REA. A bit slower, but every step has evidence you can check. Three: a human with reverse-engineering tools. The deepest, but the hardest to learn and the slowest. In one comparison, the group without REA finished first, but the group with REA built a clearly better result. That's an observation cited in the reference video, not a rigorous benchmark. So for a familiar small feature, screenshots may be enough; reach for REA when you need the rules you can't see.",
+     "kind": "s07",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 255.33,
+       "end": 256.402
+      },
+      {
+       "name": "b0",
+       "start": 256.402,
+       "end": 262.783
+      },
+      {
+       "name": "b1",
+       "start": 262.783,
+       "end": 270.646
+      },
+      {
+       "name": "b2",
+       "start": 270.646,
+       "end": 276.948
+      },
+      {
+       "name": "b3",
+       "start": 276.948,
+       "end": 283.431
+      },
+      {
+       "name": "b4",
+       "start": 283.431,
+       "end": 290.706
+      },
+      {
+       "name": "b5",
+       "start": 290.706,
+       "end": 295.042
+      },
+      {
+       "name": "b6",
+       "start": 295.042,
+       "end": 303.705
+      }
+     ],
+     "qa_times": [
+      260.192,
+      267.315,
+      274.397
+     ]
+    },
+    {
+     "id": "s08",
+     "section": "application",
+     "start": 303.705,
+     "end": 354.12,
+     "title": "一行指令與一本備忘錄",
+     "screen": "安裝、本片實測與參考影片案例",
+     "objective": "知道怎麼安裝，並從實測與案例看到 REA 實際產出什麼",
+     "narration": "Installing is simple: run npx rea-agents setup, or just hand the repo link to your agent and ask it to install REA itself. We tried it ourselves: REA 6.5 analyzing a tiny notes app we wrote. It traced the whole call chain on its own: from the search in the web page, through the IPC channel, to the search function in the main process. It also listed its limits: the code was never executed, and not finding something doesn't prove it's absent. The reference video had AI recreate the Mac Notes app, with note-taking features only. The result could create, pin, organize into folders, search and undo deletes; but the target was deliberately simple, so it doesn't show how deep REA can dig.",
+     "kind": "s08",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 303.705,
+       "end": 304.787
+      },
+      {
+       "name": "b0",
+       "start": 304.787,
+       "end": 309.83
+      },
+      {
+       "name": "b1",
+       "start": 309.83,
+       "end": 315.261
+      },
+      {
+       "name": "b2",
+       "start": 315.261,
+       "end": 321.009
+      },
+      {
+       "name": "b3",
+       "start": 321.009,
+       "end": 329.377
+      },
+      {
+       "name": "b4",
+       "start": 329.377,
+       "end": 336.586
+      },
+      {
+       "name": "b5",
+       "start": 336.586,
+       "end": 342.087
+      },
+      {
+       "name": "b6",
+       "start": 342.087,
+       "end": 348.181
+      },
+      {
+       "name": "b7",
+       "start": 348.181,
+       "end": 354.12
+      }
+     ],
+     "qa_times": [
+      307.909,
+      313.146,
+      318.735
+     ]
+    },
+    {
+     "id": "s09",
+     "section": "application",
+     "start": 354.12,
+     "end": 396.215,
+     "title": "拆不到的地方",
+     "screen": "能力邊界：伺服器、混淆、授權",
+     "objective": "能判斷哪些需求超出 REA 的能力或合法範圍",
+     "narration": "There are also things REA can't take apart. Many services keep their core on remote servers: you can capture requests and responses, but not the backend code. Take cross-device sync: the screens are easy; handling offline edits and conflicts is the real work. With heavily obfuscated or packed programs, inference turns into guesswork; and commercial tools like IDA and Hopper need proper licenses, and the software you analyze must be yours to study. And download only from official sources: after it went viral, fake copies carrying trojans appeared.",
+     "kind": "s09",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 354.12,
+       "end": 355.145
+      },
+      {
+       "name": "b0",
+       "start": 355.145,
+       "end": 358.949
+      },
+      {
+       "name": "b1",
+       "start": 358.949,
+       "end": 366.883
+      },
+      {
+       "name": "b2",
+       "start": 366.883,
+       "end": 374.542
+      },
+      {
+       "name": "b3",
+       "start": 374.542,
+       "end": 380.196
+      },
+      {
+       "name": "b4",
+       "start": 380.196,
+       "end": 388.029
+      },
+      {
+       "name": "b5",
+       "start": 388.029,
+       "end": 396.215
+      }
+     ],
+     "qa_times": [
+      357.647,
+      363.516,
+      371.312
+     ]
+    },
+    {
+     "id": "s10",
+     "section": "outlook",
+     "start": 396.215,
+     "end": 429.39,
+     "title": "熱潮留下的三個訊號",
+     "screen": "截至 2026-10-17 的觀察與推測",
+     "objective": "帶走三個可遷移的啟示，並分辨觀察與推測",
+     "narration": "This wave of hype leaves three signals. First, connecting old tools to agents is a change in kind: a tool existing doesn't mean ordinary people can use it. Second, a reference product is the best spec; but how much to build is still your call. The same goes for writing proposals: giving AI one good template beats a pile of adjectives. Third, and this is a guess: mainstream coding agents will likely build in similar abilities sooner or later.",
+     "kind": "s10",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 396.215,
+       "end": 397.271
+      },
+      {
+       "name": "b0",
+       "start": 397.271,
+       "end": 400.099
+      },
+      {
+       "name": "b1",
+       "start": 400.099,
+       "end": 408.238
+      },
+      {
+       "name": "b2",
+       "start": 408.238,
+       "end": 414.471
+      },
+      {
+       "name": "b3",
+       "start": 414.471,
+       "end": 421.232
+      },
+      {
+       "name": "b4",
+       "start": 421.232,
+       "end": 429.39
+      }
+     ],
+     "qa_times": [
+      399.285,
+      404.769,
+      411.955
+     ]
+    },
+    {
+     "id": "s11",
+     "section": "outlook",
+     "start": 429.39,
+     "end": 477.005,
+     "title": "城牆沉到水面下",
+     "screen": "功能之外，才是產品的護城河",
+     "objective": "理解功能之外的產品護城河，並知道使用 REA 要聚焦目標",
+     "narration": "So, will software companies lose their moat? Small single-feature tools are indeed getting easier to copy. But features are just the tip of the iceberg; below the surface are sync infrastructure, compatibility with old data, support, permissions, and years of users' data. For individuals, building a tool tailored just for you has become cheap; turning it into a product for the public is still a long, hard operating battle. The distance from idea to prototype has shrunk dramatically, but prototype to product is still the core of software engineering. So when you use REA, the more focused your goal, the better.",
+     "kind": "s11",
+     "spoken_date": "",
+     "phases": [
+      {
+       "name": "intro",
+       "start": 429.39,
+       "end": 430.485
+      },
+      {
+       "name": "b0",
+       "start": 430.485,
+       "end": 434.106
+      },
+      {
+       "name": "b1",
+       "start": 434.106,
+       "end": 438.34
+      },
+      {
+       "name": "b2",
+       "start": 438.34,
+       "end": 441.784
+      },
+      {
+       "name": "b3",
+       "start": 441.784,
+       "end": 451.471
+      },
+      {
+       "name": "b4",
+       "start": 451.471,
+       "end": 456.856
+      },
+      {
+       "name": "b5",
+       "start": 456.856,
+       "end": 462.762
+      },
+      {
+       "name": "b6",
+       "start": 462.762,
+       "end": 471.139
+      },
+      {
+       "name": "b7",
+       "start": 471.139,
+       "end": 477.005
+      }
+     ],
+     "qa_times": [
+      432.896,
+      436.823,
+      440.662
+     ]
+    },
+    {
+     "id": "credit",
+     "section": "credit",
+     "start": 477.005,
+     "end": 480.0,
+     "title": "",
+     "screen": "李振偉老師",
+     "narration": "",
+     "kind": "credit",
+     "phases": [
+      {
+       "name": "署名",
+       "start": 477.005,
+       "end": 480.0
+      }
+     ],
+     "qa_times": []
+    }
+   ],
+   "subtitles": {
+    "reviewed": true,
+    "timing_source": "ffmpeg silencedetect pauses in the actual Gemini narration, mapped to approved script segments; automated check only, listening review pending",
+    "cues": [
+     {
+      "start": 1.073,
+      "end": 6.737,
+      "text": {
+       "zh-TW": "2026 年 10 月，GitHub 上有個開源專案突然爆紅。",
+       "en-US": "In October 2026, an open-source project suddenly blew up on GitHub.",
+       "vi-VN": "Tháng 10 năm 2026, một dự án mã nguồn mở bỗng nổi như cồn trên GitHub.",
+       "ja-JP": "2026年10月、GitHubであるオープンソースプロジェクトが突然大ブレイクしました。"
+      },
+      "unit": "s01.0"
+     },
+     {
+      "start": 7.397,
+      "end": 11.733,
+      "text": {
+       "zh-TW": "到了 10 月 15 日，它的星星數已經突破二十五萬。",
+       "en-US": "By October 15, it had passed two hundred fifty thousand stars.",
+       "vi-VN": "Đến ngày 15 tháng 10, số sao của nó đã vượt hai trăm năm mươi nghìn.",
+       "ja-JP": "10月15日には、スター数が25万を突破しました。"
+      },
+      "unit": "s01.1"
+     },
+     {
+      "start": 12.346,
+      "end": 16.141,
+      "text": {
+       "zh-TW": "它叫 REA，全名是 Reverse Engineer Anything，",
+       "en-US": "It's called REA, short for Reverse Engineer Anything:",
+       "vi-VN": "Nó tên là REA, viết tắt của Reverse Engineer Anything,",
+       "ja-JP": "名前はREA、正式名称はReverse Engineer Anything、"
+      },
+      "unit": "s01.2"
+     },
+     {
+      "start": 16.784,
+      "end": 18.996,
+      "text": {
+       "zh-TW": "也就是「逆向工程任何東西」。",
+       "en-US": "reverse engineering, applied to anything.",
+       "vi-VN": "tức là “dịch ngược bất cứ thứ gì”.",
+       "ja-JP": "つまり「何でもリバースエンジニアリングする」という意味です。"
+      },
+      "unit": "s01.3"
+     },
+     {
+      "start": 19.744,
+      "end": 23.863,
+      "text": {
+       "zh-TW": "有人用它拆解老遊戲的玩法，再用 Rust 重寫；",
+       "en-US": "People used it to take apart an old game's mechanics and rewrite them in Rust;",
+       "vi-VN": "Có người dùng nó mổ xẻ lối chơi của một trò chơi cũ rồi viết lại bằng Rust;",
+       "ja-JP": "古いゲームの仕組みを分解し、Rustで書き直した人もいれば、"
+      },
+      "unit": "s01.4"
+     },
+     {
+      "start": 24.229,
+      "end": 27.065,
+      "text": {
+       "zh-TW": "也有人把經典射擊遊戲的第一關，搬上了網頁。",
+       "en-US": "others brought the first level of a classic shooter to the web.",
+       "vi-VN": "người khác đưa màn đầu của một game bắn súng kinh điển lên web.",
+       "ja-JP": "名作シューティングゲームの第1ステージをWebに移植した人もいます。"
+      },
+      "unit": "s01.5"
+     },
+     {
+      "start": 27.584,
+      "end": 31.312,
+      "text": {
+       "zh-TW": "而它的故事，要從 2026 年 4 月 14 日說起。",
+       "en-US": "And its story begins on April 14, 2026.",
+       "vi-VN": "Và câu chuyện của nó bắt đầu từ ngày 14 tháng 4 năm 2026.",
+       "ja-JP": "その物語は、2026年4月14日から始まります。"
+      },
+      "unit": "s01.6"
+     },
+     {
+      "start": 33.991,
+      "end": 35.847,
+      "text": {
+       "zh-TW": "不過，REA 不是一夜之間冒出來的。",
+       "en-US": "But REA didn't appear overnight.",
+       "vi-VN": "Nhưng REA không xuất hiện chỉ sau một đêm.",
+       "ja-JP": "ただし、REAは一夜にして生まれたわけではありません。"
+      },
+      "unit": "s02.0"
+     },
+     {
+      "start": 36.322,
+      "end": 39.604,
+      "text": {
+       "zh-TW": "它的第一次提交，在 2026 年 4 月 14 日。",
+       "en-US": "Its first commit was on April 14, 2026.",
+       "vi-VN": "Lần commit đầu tiên của nó là vào ngày 14 tháng 4 năm 2026.",
+       "ja-JP": "最初のコミットは2026年4月14日でした。"
+      },
+      "unit": "s02.1"
+     },
+     {
+      "start": 40.368,
+      "end": 43.151,
+      "text": {
+       "zh-TW": "當時它叫 betterBinaryMCP，",
+       "en-US": "Back then it was called betterBinaryMCP,",
+       "vi-VN": "Khi đó nó tên là betterBinaryMCP,",
+       "ja-JP": "当時の名前はbetterBinaryMCP。"
+      },
+      "unit": "s02.2"
+     },
+     {
+      "start": 43.604,
+      "end": 46.869,
+      "text": {
+       "zh-TW": "只是一個讓 AI 操作 Hopper 反組譯器的小外掛。",
+       "en-US": "a small plugin that let AI drive the Hopper disassembler.",
+       "vi-VN": "chỉ là một plugin nhỏ giúp AI điều khiển trình dịch ngược Hopper.",
+       "ja-JP": "AIに逆アセンブラのHopperを操作させる、小さなプラグインにすぎませんでした。"
+      },
+      "unit": "s02.3"
+     },
+     {
+      "start": 47.65,
+      "end": 51.68,
+      "text": {
+       "zh-TW": "7 月 12 日，它改名 REA，發布到 npm，",
+       "en-US": "On July 12, it was renamed REA and published to npm,",
+       "vi-VN": "Ngày 12 tháng 7, nó đổi tên thành REA và được phát hành lên npm,",
+       "ja-JP": "7月12日にREAへ改名し、npmで公開。"
+      },
+      "unit": "s02.4"
+     },
+     {
+      "start": 52.375,
+      "end": 57.245,
+      "text": {
+       "zh-TW": "能分析的東西，也從原生程式擴充到網頁、桌面和手機 App。",
+       "en-US": "and what it could analyze grew from native programs to web, desktop and mobile apps.",
+       "vi-VN": "phạm vi phân tích mở rộng từ chương trình gốc sang web, ứng dụng máy tính và di động.",
+       "ja-JP": "解析対象もネイティブプログラムから、Web、デスクトップ、モバイルアプリへと広がりました。"
+      },
+      "unit": "s02.5"
+     },
+     {
+      "start": 58.04,
+      "end": 63.591,
+      "text": {
+       "zh-TW": "10 月初它登上熱門榜，光是 10 月就有兩千六百多次提交。",
+       "en-US": "In early October it hit the trending charts, with over 2,600 commits in that month alone.",
+       "vi-VN": "Đầu tháng 10, nó lọt bảng xu hướng, riêng tháng 10 đã có hơn 2.600 commit.",
+       "ja-JP": "10月初めにトレンド入りし、10月だけで2,600回以上のコミットがありました。"
+      },
+      "unit": "s02.6"
+     },
+     {
+      "start": 64.281,
+      "end": 70.294,
+      "text": {
+       "zh-TW": "它紅，是因為一句話就說得懂：看到喜歡的功能，叫 AI 拆給你看；",
+       "en-US": "It took off because the pitch fits in one line: see a feature you like, and have AI take it apart for you;",
+       "vi-VN": "Nó nổi vì chỉ một câu là hiểu: thấy tính năng mình thích, nhờ AI mổ xẻ cho xem;",
+       "ja-JP": "ヒットした理由は一言で伝わるから。気に入った機能を見つけたら、AIに分解してもらう。"
+      },
+      "unit": "s02.7"
+     },
+     {
+      "start": 70.828,
+      "end": 76.765,
+      "text": {
+       "zh-TW": "也戳中一個焦慮：如果什麼都拆得開，軟體公司還守得住嗎？",
+       "en-US": "and it touched a nerve: if anything can be taken apart, can software companies still hold their ground?",
+       "vi-VN": "và nó chạm vào một nỗi lo: nếu cái gì cũng mổ xẻ được, công ty phần mềm còn giữ được vị thế không?",
+       "ja-JP": "そして不安も突きました。何でも分解できるなら、ソフトウェア企業は守りきれるのか、と。"
+      },
+      "unit": "s02.8"
+     },
+     {
+      "start": 79.43,
+      "end": 82.873,
+      "text": {
+       "zh-TW": "要懂 REA，先從逆向工程說起。",
+       "en-US": "To understand REA, start with reverse engineering.",
+       "vi-VN": "Để hiểu REA, hãy bắt đầu từ kỹ thuật dịch ngược.",
+       "ja-JP": "REAを理解するには、まずリバースエンジニアリングから。"
+      },
+      "unit": "s03.0"
+     },
+     {
+      "start": 83.593,
+      "end": 86.116,
+      "text": {
+       "zh-TW": "平常做軟體，是工程師寫好原始碼，",
+       "en-US": "Normally, engineers write source code,",
+       "vi-VN": "Thông thường, kỹ sư viết mã nguồn,",
+       "ja-JP": "普段のソフト開発では、エンジニアがソースコードを書き、"
+      },
+      "unit": "s03.1"
+     },
+     {
+      "start": 86.544,
+      "end": 90.871,
+      "text": {
+       "zh-TW": "再由編譯器翻成機器看得懂的指令，打包成 App。",
+       "en-US": "a compiler turns it into machine instructions, and it's packaged as an app.",
+       "vi-VN": "trình biên dịch chuyển nó thành lệnh máy, rồi đóng gói thành ứng dụng.",
+       "ja-JP": "コンパイラが機械向けの命令に変換し、アプリとしてパッケージします。"
+      },
+      "unit": "s03.2"
+     },
+     {
+      "start": 91.503,
+      "end": 96.632,
+      "text": {
+       "zh-TW": "這條路是單行道：註解、變數名稱，在編譯時就丟掉了。",
+       "en-US": "It's a one-way street: comments and variable names are thrown away during compilation.",
+       "vi-VN": "Đây là đường một chiều: chú thích và tên biến bị bỏ đi khi biên dịch.",
+       "ja-JP": "これは一方通行です。コメントや変数名は、コンパイルの時点で失われます。"
+      },
+      "unit": "s03.3"
+     },
+     {
+      "start": 97.991,
+      "end": 101.231,
+      "text": {
+       "zh-TW": "逆向工程，就是從成品倒推回去，",
+       "en-US": "Reverse engineering works backwards from the finished product,",
+       "vi-VN": "Dịch ngược là đi ngược từ thành phẩm,",
+       "ja-JP": "リバースエンジニアリングは、完成品から逆にたどり、"
+      },
+      "unit": "s03.4"
+     },
+     {
+      "start": 101.624,
+      "end": 105.74,
+      "text": {
+       "zh-TW": "研究它的結構、資料怎麼流動、邏輯怎麼運作。",
+       "en-US": "studying its structure, how data flows, and how the logic works.",
+       "vi-VN": "nghiên cứu cấu trúc, cách dữ liệu luân chuyển và cách logic vận hành.",
+       "ja-JP": "構造やデータの流れ、ロジックの動きを調べることです。"
+      },
+      "unit": "s03.5"
+     },
+     {
+      "start": 106.633,
+      "end": 110.637,
+      "text": {
+       "zh-TW": "這門技術常用在相容性、資安檢查，",
+       "en-US": "It is commonly used for compatibility work, security reviews,",
+       "vi-VN": "Kỹ thuật này thường dùng cho việc tương thích, kiểm tra bảo mật",
+       "ja-JP": "この技術は、互換性の確保やセキュリティ検査、"
+      },
+      "unit": "s03.6"
+     },
+     {
+      "start": 110.794,
+      "end": 112.734,
+      "text": {
+       "zh-TW": "以及保存已經停產的軟體。",
+       "en-US": "and preserving discontinued software.",
+       "vi-VN": "và lưu giữ phần mềm đã ngừng phát triển.",
+       "ja-JP": "販売終了したソフトの保存によく使われます。"
+      },
+      "unit": "s03.6"
+     },
+     {
+      "start": 113.723,
+      "end": 116.747,
+      "text": {
+       "zh-TW": "就像拿到一只沒有設計圖的機械錶，",
+       "en-US": "It's like holding a mechanical watch with no blueprint:",
+       "vi-VN": "Giống như cầm một chiếc đồng hồ cơ không có bản thiết kế,",
+       "ja-JP": "設計図のない機械式時計を手にしたようなものです。"
+      },
+      "unit": "s03.7"
+     },
+     {
+      "start": 117.216,
+      "end": 122.406,
+      "text": {
+       "zh-TW": "你只能聽它走動、按按看，或者打開後蓋，看齒輪怎麼咬合。",
+       "en-US": "you can listen to it tick, press its buttons, or open the back and watch how the gears mesh.",
+       "vi-VN": "bạn chỉ có thể nghe nó chạy, bấm thử, hoặc mở nắp sau xem các bánh răng ăn khớp ra sao.",
+       "ja-JP": "動く音を聞き、ボタンを押し、裏蓋を開けて歯車のかみ合いを見るしかありません。"
+      },
+      "unit": "s03.8"
+     },
+     {
+      "start": 125.191,
+      "end": 128.395,
+      "text": {
+       "zh-TW": "專業的拆錶工具，其實早就有了，",
+       "en-US": "Professional watch-opening tools have existed for years:",
+       "vi-VN": "Những công cụ tháo đồng hồ chuyên nghiệp thật ra đã có từ lâu,",
+       "ja-JP": "プロ用の“時計を開ける道具”は、実はずっと前からあります。"
+      },
+      "unit": "s04.0"
+     },
+     {
+      "start": 128.842,
+      "end": 131.153,
+      "text": {
+       "zh-TW": "像 Ghidra、IDA、Hopper，",
+       "en-US": "Ghidra, IDA, Hopper.",
+       "vi-VN": "như Ghidra, IDA, Hopper,",
+       "ja-JP": "Ghidra、IDA、Hopperなどです。"
+      },
+      "unit": "s04.1"
+     },
+     {
+      "start": 131.569,
+      "end": 135.954,
+      "text": {
+       "zh-TW": "能把機器指令反編譯成接近人類可讀的程式碼。",
+       "en-US": "They decompile machine instructions into code that's close to human-readable.",
+       "vi-VN": "chúng dịch ngược lệnh máy thành mã gần như con người đọc được.",
+       "ja-JP": "機械命令を、人が読める形に近いコードへ逆コンパイルできます。"
+      },
+      "unit": "s04.2"
+     },
+     {
+      "start": 136.618,
+      "end": 143.548,
+      "text": {
+       "zh-TW": "可是反編譯出來的程式碼，到處是沒有名字的變數和片段，還得一行行驗證。",
+       "en-US": "But decompiled code is full of nameless variables and fragments, and still has to be verified line by line.",
+       "vi-VN": "Nhưng mã dịch ngược đầy những biến không tên và mảnh rời rạc, vẫn phải kiểm chứng từng dòng.",
+       "ja-JP": "ただ、逆コンパイルされたコードは名前のない変数や断片だらけで、一行ずつ検証が必要です。"
+      },
+      "unit": "s04.3"
+     },
+     {
+      "start": 144.416,
+      "end": 147.34,
+      "text": {
+       "zh-TW": "但難的從來不是工具，而是判斷：",
+       "en-US": "But the hard part was never the tools; it's judgment:",
+       "vi-VN": "Nhưng phần khó chưa bao giờ là công cụ, mà là phán đoán:",
+       "ja-JP": "ただ、難しいのは道具ではなく判断です。"
+      },
+      "unit": "s04.4"
+     },
+     {
+      "start": 147.855,
+      "end": 151.251,
+      "text": {
+       "zh-TW": "上千個函式攤在眼前，該從哪一個下刀？",
+       "en-US": "with thousands of functions laid out, where do you make the first cut?",
+       "vi-VN": "hàng nghìn hàm bày ra trước mắt, nên bắt đầu từ hàm nào?",
+       "ja-JP": "何千もの関数が並ぶ中、どこから切り込むべきか。"
+      },
+      "unit": "s04.5"
+     },
+     {
+      "start": 151.893,
+      "end": 156.041,
+      "text": {
+       "zh-TW": "過去，這份判斷只存在少數專家的經驗裡。",
+       "en-US": "Until now, that judgment lived only in the experience of a few experts.",
+       "vi-VN": "Trước đây, phán đoán ấy chỉ nằm trong kinh nghiệm của số ít chuyên gia.",
+       "ja-JP": "これまで、その判断は一部の専門家の経験の中にしかありませんでした。"
+      },
+      "unit": "s04.6"
+     },
+     {
+      "start": 158.726,
+      "end": 163.606,
+      "text": {
+       "zh-TW": "REA 做的事，是把這些老工具直接接給 AI 代理人。",
+       "en-US": "What REA does is wire these veteran tools straight into an AI agent.",
+       "vi-VN": "Việc REA làm là nối thẳng các công cụ kỳ cựu này vào tác tử AI.",
+       "ja-JP": "REAがするのは、こうした老舗ツールをAIエージェントに直接つなぐことです。"
+      },
+      "unit": "s05.0"
+     },
+     {
+      "start": 164.315,
+      "end": 166.183,
+      "text": {
+       "zh-TW": "你可以把它拆成三層。",
+       "en-US": "You can split it into three layers.",
+       "vi-VN": "Bạn có thể tách nó thành ba tầng.",
+       "ja-JP": "これは3つの層に分けられます。"
+      },
+      "unit": "s05.1"
+     },
+     {
+      "start": 166.762,
+      "end": 170.829,
+      "text": {
+       "zh-TW": "最上層是代理人，像 Claude Code 或 Codex，",
+       "en-US": "On top is the agent, like Claude Code or Codex,",
+       "vi-VN": "Tầng trên cùng là tác tử, như Claude Code hay Codex,",
+       "ja-JP": "一番上はClaude CodeやCodexのようなエージェントで、"
+      },
+      "unit": "s05.2"
+     },
+     {
+      "start": 171.012,
+      "end": 173.899,
+      "text": {
+       "zh-TW": "負責理解需求、規劃下一步。",
+       "en-US": "which understands what you want and plans the next step.",
+       "vi-VN": "lo hiểu yêu cầu và lên kế hoạch bước tiếp theo.",
+       "ja-JP": "要望を理解し、次の一手を計画します。"
+      },
+      "unit": "s05.3"
+     },
+     {
+      "start": 174.768,
+      "end": 179.127,
+      "text": {
+       "zh-TW": "中間是 REA：它用 MCP 提供分析工具，",
+       "en-US": "In the middle is REA: it offers analysis tools through MCP,",
+       "vi-VN": "Ở giữa là REA: nó cung cấp công cụ phân tích qua MCP,",
+       "ja-JP": "真ん中がREA。MCPで解析ツールを提供し、"
+      },
+      "unit": "s05.4"
+     },
+     {
+      "start": 179.535,
+      "end": 182.652,
+      "text": {
+       "zh-TW": "再附一份 Skill，像辦案手冊，",
+       "en-US": "plus a Skill that works like an investigator's handbook,",
+       "vi-VN": "kèm một Skill giống như sổ tay điều tra,",
+       "ja-JP": "さらに捜査マニュアルのようなSkillを添えて、"
+      },
+      "unit": "s05.5"
+     },
+     {
+      "start": 183.126,
+      "end": 187.01,
+      "text": {
+       "zh-TW": "教代理人怎麼查、怎麼整理證據。",
+       "en-US": "teaching the agent how to investigate and how to organize evidence.",
+       "vi-VN": "dạy tác tử cách điều tra và sắp xếp bằng chứng.",
+       "ja-JP": "調べ方や証拠のまとめ方をエージェントに教えます。"
+      },
+      "unit": "s05.6"
+     },
+     {
+      "start": 187.813,
+      "end": 191.594,
+      "text": {
+       "zh-TW": "最底層，才是 Ghidra、Hopper 這些老牌引擎。",
+       "en-US": "At the bottom are the veteran engines, like Ghidra and Hopper.",
+       "vi-VN": "Tầng dưới cùng mới là các công cụ lâu đời như Ghidra, Hopper.",
+       "ja-JP": "一番下に、GhidraやHopperといった老舗エンジンがあります。"
+      },
+      "unit": "s05.7"
+     },
+     {
+      "start": 192.391,
+      "end": 196.065,
+      "text": {
+       "zh-TW": "代理人提問，REA 指揮引擎去拆，",
+       "en-US": "The agent asks, REA directs the engines to take things apart,",
+       "vi-VN": "Tác tử đặt câu hỏi, REA điều khiển công cụ mổ xẻ,",
+       "ja-JP": "エージェントが問い、REAがエンジンに分解を指示し、"
+      },
+      "unit": "s05.8"
+     },
+     {
+      "start": 196.506,
+      "end": 202.197,
+      "text": {
+       "zh-TW": "再把證據帶回來：檔案雜湊、程式位置，還有它不確定的地方。",
+       "en-US": "and brings the evidence back: file hashes, code locations, and what it isn't sure about.",
+       "vi-VN": "rồi mang bằng chứng về: mã băm tệp, vị trí mã, và cả những điểm nó chưa chắc chắn.",
+       "ja-JP": "証拠を持ち帰ります。ファイルのハッシュ、コードの位置、そして確信の持てない点も。"
+      },
+      "unit": "s05.9"
+     },
+     {
+      "start": 204.909,
+      "end": 207.837,
+      "text": {
+       "zh-TW": "實際調查時，它是一個迴圈：",
+       "en-US": "In practice, the investigation is a loop:",
+       "vi-VN": "Khi điều tra thực tế, đó là một vòng lặp:",
+       "ja-JP": "実際の調査はループになっています。"
+      },
+      "unit": "s06.0"
+     },
+     {
+      "start": 208.431,
+      "end": 214.534,
+      "text": {
+       "zh-TW": "先檢查目標，順著線索追，動手實作，再跑起來和原版比對；",
+       "en-US": "inspect the target, follow the leads, build it, then run it and compare with the original;",
+       "vi-VN": "kiểm tra mục tiêu, lần theo manh mối, bắt tay làm, rồi chạy thử và so với bản gốc;",
+       "ja-JP": "対象を調べ、手がかりを追い、実装して動かし、元のアプリと比べます。"
+      },
+      "unit": "s06.1"
+     },
+     {
+      "start": 215.42,
+      "end": 218.151,
+      "text": {
+       "zh-TW": "對不上，就回頭補查。",
+       "en-US": "if it doesn't match, go back and dig further.",
+       "vi-VN": "nếu không khớp, quay lại điều tra thêm.",
+       "ja-JP": "合わなければ、戻って調べ直します。"
+      },
+      "unit": "s06.2"
+     },
+     {
+      "start": 219.277,
+      "end": 221.32,
+      "text": {
+       "zh-TW": "目標不同，查法也不同：",
+       "en-US": "Different targets need different methods:",
+       "vi-VN": "Mục tiêu khác nhau thì cách điều tra cũng khác:",
+       "ja-JP": "対象によって調べ方も変わります。"
+      },
+      "unit": "s06.3"
+     },
+     {
+      "start": 221.914,
+      "end": 225.269,
+      "text": {
+       "zh-TW": "網頁看頁面結構和網路請求；",
+       "en-US": "for websites, look at the page structure and network requests;",
+       "vi-VN": "với trang web, xem cấu trúc trang và các yêu cầu mạng;",
+       "ja-JP": "Webならページ構造と通信リクエスト、"
+      },
+      "unit": "s06.4"
+     },
+     {
+      "start": 225.917,
+      "end": 229.118,
+      "text": {
+       "zh-TW": "Electron 桌面 App 看模組之間的呼叫；",
+       "en-US": "for Electron desktop apps, the calls between modules;",
+       "vi-VN": "với ứng dụng máy tính Electron, xem lời gọi giữa các mô-đun;",
+       "ja-JP": "Electronのデスクトップアプリならモジュール間の呼び出し、"
+      },
+      "unit": "s06.5"
+     },
+     {
+      "start": 229.941,
+      "end": 232.521,
+      "text": {
+       "zh-TW": "原生程式，才需要動用反編譯。",
+       "en-US": "only native programs call for decompilation.",
+       "vi-VN": "chỉ chương trình gốc mới cần đến dịch ngược mã.",
+       "ja-JP": "逆コンパイルが必要なのはネイティブプログラムだけです。"
+      },
+      "unit": "s06.6"
+     },
+     {
+      "start": 233.864,
+      "end": 238.72,
+      "text": {
+       "zh-TW": "拿筆記軟體的搜尋來說，截圖只看得到搜尋框；",
+       "en-US": "Take a notes app's search: a screenshot only shows the search box;",
+       "vi-VN": "Lấy ví dụ tìm kiếm trong ứng dụng ghi chú: ảnh chụp chỉ thấy ô tìm kiếm;",
+       "ja-JP": "メモアプリの検索なら、スクリーンショットで分かるのは検索欄だけ。"
+      },
+      "unit": "s06.7"
+     },
+     {
+      "start": 239.407,
+      "end": 244.46,
+      "text": {
+       "zh-TW": "比對標題還是內文、有沒有分詞、怎麼排序，",
+       "en-US": "whether it matches titles or body text, whether it tokenizes, how it ranks:",
+       "vi-VN": "khớp tiêu đề hay nội dung, có tách từ không, xếp hạng thế nào —",
+       "ja-JP": "タイトルか本文か、分かち書きの有無、並び順は、"
+      },
+      "unit": "s06.8"
+     },
+     {
+      "start": 244.95,
+      "end": 246.956,
+      "text": {
+       "zh-TW": "得靠調查才挖得出來。",
+       "en-US": "only investigation digs that out.",
+       "vi-VN": "phải điều tra mới biết.",
+       "ja-JP": "調べて初めて分かります。"
+      },
+      "unit": "s06.8"
+     },
+     {
+      "start": 248.024,
+      "end": 253.719,
+      "text": {
+       "zh-TW": "需求就從「做個搜尋」，升級成「照這些驗證過的規則做」。",
+       "en-US": "The request upgrades from \"build a search\" to \"build it by these verified rules.\"",
+       "vi-VN": "Yêu cầu khi đó nâng cấp từ “làm một ô tìm kiếm” thành “làm theo những quy tắc đã kiểm chứng này”.",
+       "ja-JP": "依頼は「検索を作って」から「検証済みのこのルール通りに作って」へと変わります。"
+      },
+      "unit": "s06.9"
+     },
+     {
+      "start": 256.402,
+      "end": 262.303,
+      "text": {
+       "zh-TW": "同樣是復刻筆記軟體的搜尋，我們並排看三種做法。",
+       "en-US": "Same task, copying a notes app's search: let's compare three approaches side by side.",
+       "vi-VN": "Cùng một việc là tái tạo tính năng tìm kiếm của ứng dụng ghi chú, hãy so sánh ba cách.",
+       "ja-JP": "同じ「メモアプリの検索を再現する」で、3つのやり方を並べてみます。"
+      },
+      "unit": "s07.0"
+     },
+     {
+      "start": 262.783,
+      "end": 269.742,
+      "text": {
+       "zh-TW": "第一種，只給 AI 截圖，讓它自己推理：最快，但細節全靠猜。",
+       "en-US": "One: give the AI only screenshots and let it reason. Fastest, but every detail is a guess.",
+       "vi-VN": "Một: chỉ đưa ảnh chụp cho AI tự suy luận. Nhanh nhất, nhưng chi tiết đều là đoán.",
+       "ja-JP": "1つ目は、AIにスクリーンショットだけ渡す方法。最速ですが、細部は推測頼みです。"
+      },
+      "unit": "s07.1"
+     },
+     {
+      "start": 270.646,
+      "end": 276.086,
+      "text": {
+       "zh-TW": "第二種，AI 加上 REA：慢一些，但每一步都有證據可查。",
+       "en-US": "Two: AI plus REA. A bit slower, but every step has evidence you can check.",
+       "vi-VN": "Hai: AI kết hợp REA. Chậm hơn một chút, nhưng bước nào cũng có bằng chứng.",
+       "ja-JP": "2つ目はAIとREA。少し遅いものの、どの段階にも確かめられる証拠があります。"
+      },
+      "unit": "s07.2"
+     },
+     {
+      "start": 276.948,
+      "end": 282.822,
+      "text": {
+       "zh-TW": "第三種，人工用逆向工具：最深入，可是門檻最高、最花時間。",
+       "en-US": "Three: a human with reverse-engineering tools. The deepest, but the hardest to learn and the slowest.",
+       "vi-VN": "Ba: con người dùng công cụ dịch ngược. Sâu nhất, nhưng khó học nhất và tốn thời gian nhất.",
+       "ja-JP": "3つ目は人が解析ツールを使う方法。最も深いですが、ハードルも時間も最大です。"
+      },
+      "unit": "s07.3"
+     },
+     {
+      "start": 283.431,
+      "end": 287.112,
+      "text": {
+       "zh-TW": "有人做過對照：沒裝 REA 的那組先做完，",
+       "en-US": "In one comparison, the group without REA finished first,",
+       "vi-VN": "Có người đã đối chiếu: nhóm không cài REA xong trước,",
+       "ja-JP": "ある比較では、REAなしの組が先に終わり、"
+      },
+      "unit": "s07.4"
+     },
+     {
+      "start": 287.382,
+      "end": 290.196,
+      "text": {
+       "zh-TW": "裝了的那組成品明顯更好。",
+       "en-US": "but the group with REA built a clearly better result.",
+       "vi-VN": "nhưng nhóm có REA cho sản phẩm tốt hơn rõ rệt.",
+       "ja-JP": "REAありの組の方が明らかに良い結果でした。"
+      },
+      "unit": "s07.4"
+     },
+     {
+      "start": 290.706,
+      "end": 294.566,
+      "text": {
+       "zh-TW": "不過，這是參考影片引述的觀察，不是嚴格的評測。",
+       "en-US": "That's an observation cited in the reference video, not a rigorous benchmark.",
+       "vi-VN": "Tuy vậy, đó là quan sát được video tham khảo dẫn lại, không phải đánh giá nghiêm ngặt.",
+       "ja-JP": "ただし、参考動画が紹介した観察で、厳密な評価ではありません。"
+      },
+      "unit": "s07.5"
+     },
+     {
+      "start": 295.042,
+      "end": 298.862,
+      "text": {
+       "zh-TW": "所以，熟悉的小功能，截圖可能就夠；",
+       "en-US": "So for a familiar small feature, screenshots may be enough;",
+       "vi-VN": "Vì vậy, với tính năng nhỏ quen thuộc, ảnh chụp có thể là đủ;",
+       "ja-JP": "つまり、よく知る小さな機能ならスクリーンショットで足り、"
+      },
+      "unit": "s07.6"
+     },
+     {
+      "start": 299.386,
+      "end": 302.062,
+      "text": {
+       "zh-TW": "想知道看不見的規則，才值得動用 REA。",
+       "en-US": "reach for REA when you need the rules you can't see.",
+       "vi-VN": "khi cần những quy tắc không nhìn thấy, mới đáng dùng REA.",
+       "ja-JP": "見えないルールを知りたいときにこそREAの出番です。"
+      },
+      "unit": "s07.6"
+     },
+     {
+      "start": 304.787,
+      "end": 309.066,
+      "text": {
+       "zh-TW": "安裝很簡單：執行 npx rea-agents setup，",
+       "en-US": "Installing is simple: run npx rea-agents setup,",
+       "vi-VN": "Cài đặt rất đơn giản: chạy npx rea-agents setup,",
+       "ja-JP": "インストールは簡単。npx rea-agents setupを実行するか、"
+      },
+      "unit": "s08.0"
+     },
+     {
+      "start": 309.83,
+      "end": 313.591,
+      "text": {
+       "zh-TW": "或者乾脆把 repo 連結丟給你的代理人，請它自己裝。",
+       "en-US": "or just hand the repo link to your agent and ask it to install REA itself.",
+       "vi-VN": "hoặc đưa luôn đường dẫn repo cho tác tử và nhờ nó tự cài.",
+       "ja-JP": "リポジトリのリンクをエージェントに渡して、インストールを任せるだけです。"
+      },
+      "unit": "s08.1"
+     },
+     {
+      "start": 315.261,
+      "end": 320.308,
+      "text": {
+       "zh-TW": "我們實際跑了一次：用 REA 6.5 版，分析一個自己寫的迷你筆記 App。",
+       "en-US": "We tried it ourselves: REA 6.5 analyzing a tiny notes app we wrote.",
+       "vi-VN": "Chúng tôi đã chạy thử: dùng REA 6.5 phân tích một ứng dụng ghi chú nhỏ tự viết.",
+       "ja-JP": "実際に試しました。REA 6.5で、自作の小さなメモアプリを解析です。"
+      },
+      "unit": "s08.2"
+     },
+     {
+      "start": 321.009,
+      "end": 323.113,
+      "text": {
+       "zh-TW": "它自動串出整條呼叫鏈：",
+       "en-US": "It traced the whole call chain on its own:",
+       "vi-VN": "Nó tự lần ra cả chuỗi lời gọi:",
+       "ja-JP": "呼び出しの流れを自動でたどりました。"
+      },
+      "unit": "s08.3"
+     },
+     {
+      "start": 323.557,
+      "end": 328.668,
+      "text": {
+       "zh-TW": "從網頁端的搜尋，經過 IPC 頻道，到主程序的搜尋函式。",
+       "en-US": "from the search in the web page, through the IPC channel, to the search function in the main process.",
+       "vi-VN": "từ ô tìm kiếm phía giao diện, qua kênh IPC, đến hàm tìm kiếm ở tiến trình chính.",
+       "ja-JP": "画面側の検索からIPCチャネルを経て、メインプロセスの検索関数まで。"
+      },
+      "unit": "s08.3"
+     },
+     {
+      "start": 329.377,
+      "end": 332.465,
+      "text": {
+       "zh-TW": "還主動附上限制：程式碼沒有被執行，",
+       "en-US": "It also listed its limits: the code was never executed,",
+       "vi-VN": "Nó còn tự ghi rõ giới hạn: mã chưa hề được chạy,",
+       "ja-JP": "限界も自ら添えました。コードは実行していない、"
+      },
+      "unit": "s08.4"
+     },
+     {
+      "start": 332.831,
+      "end": 335.263,
+      "text": {
+       "zh-TW": "找不到不代表不存在。",
+       "en-US": "and not finding something doesn't prove it's absent.",
+       "vi-VN": "và không tìm thấy không có nghĩa là không tồn tại.",
+       "ja-JP": "見つからないことは存在しない証明ではない、と。"
+      },
+      "unit": "s08.4"
+     },
+     {
+      "start": 336.586,
+      "end": 341.389,
+      "text": {
+       "zh-TW": "參考影片則讓 AI 復刻 Mac 的備忘錄，只要筆記功能。",
+       "en-US": "The reference video had AI recreate the Mac Notes app, with note-taking features only.",
+       "vi-VN": "Video tham khảo thì để AI tái tạo ứng dụng Ghi chú của Mac, chỉ phần ghi chú.",
+       "ja-JP": "参考動画では、AIにMacのメモアプリをメモ機能だけ再現させました。"
+      },
+      "unit": "s08.5"
+     },
+     {
+      "start": 342.087,
+      "end": 347.579,
+      "text": {
+       "zh-TW": "做出來的 App 能新增、釘選、分資料夾、搜尋和復原；",
+       "en-US": "The result could create, pin, organize into folders, search and undo deletes;",
+       "vi-VN": "Ứng dụng làm ra có thể tạo, ghim, chia thư mục, tìm kiếm và khôi phục;",
+       "ja-JP": "できたアプリは、作成、ピン留め、フォルダ分け、検索、削除の取り消しが動きました。"
+      },
+      "unit": "s08.6"
+     },
+     {
+      "start": 348.181,
+      "end": 352.491,
+      "text": {
+       "zh-TW": "但目標刻意挑得簡單，看不出 REA 能挖多深。",
+       "en-US": "but the target was deliberately simple, so it doesn't show how deep REA can dig.",
+       "vi-VN": "nhưng mục tiêu được chọn đơn giản có chủ ý, nên chưa thấy REA đào sâu được đến đâu.",
+       "ja-JP": "ただし対象はわざと簡単なものなので、REAがどこまで深く掘れるかは分かりません。"
+      },
+      "unit": "s08.7"
+     },
+     {
+      "start": 355.145,
+      "end": 358.21,
+      "text": {
+       "zh-TW": "REA 也有拆不到的地方。",
+       "en-US": "There are also things REA can't take apart.",
+       "vi-VN": "REA cũng có những chỗ không mổ xẻ được.",
+       "ja-JP": "REAにも分解できないものがあります。"
+      },
+      "unit": "s09.0"
+     },
+     {
+      "start": 358.949,
+      "end": 361.925,
+      "text": {
+       "zh-TW": "很多服務的核心在遠端伺服器：",
+       "en-US": "Many services keep their core on remote servers:",
+       "vi-VN": "Nhiều dịch vụ đặt phần lõi trên máy chủ từ xa:",
+       "ja-JP": "多くのサービスは中核がリモートのサーバーにあり、"
+      },
+      "unit": "s09.1"
+     },
+     {
+      "start": 362.364,
+      "end": 366.391,
+      "text": {
+       "zh-TW": "你抓得到請求和回應，拿不到後端程式。",
+       "en-US": "you can capture requests and responses, but not the backend code.",
+       "vi-VN": "bạn bắt được yêu cầu và phản hồi, nhưng không lấy được mã phía máy chủ.",
+       "ja-JP": "リクエストと応答は取れても、バックエンドのコードは手に入りません。"
+      },
+      "unit": "s09.1"
+     },
+     {
+      "start": 366.883,
+      "end": 373.86,
+      "text": {
+       "zh-TW": "像跨裝置同步，畫面好做，斷線、衝突怎麼處理，才是真功夫。",
+       "en-US": "Take cross-device sync: the screens are easy; handling offline edits and conflicts is the real work.",
+       "vi-VN": "Như đồng bộ giữa thiết bị: giao diện thì dễ, xử lý mất mạng và xung đột mới là công phu thật.",
+       "ja-JP": "端末間の同期なら、画面は簡単でも、オフラインや競合の処理こそが本当の腕の見せ所です。"
+      },
+      "unit": "s09.2"
+     },
+     {
+      "start": 374.542,
+      "end": 379.523,
+      "text": {
+       "zh-TW": "重度混淆或加殼的程式，推論會變成猜測；",
+       "en-US": "With heavily obfuscated or packed programs, inference turns into guesswork;",
+       "vi-VN": "Với chương trình bị làm rối hoặc đóng gói nặng, suy luận sẽ thành phỏng đoán;",
+       "ja-JP": "強く難読化・パックされたプログラムでは、推論は当て推量になります。"
+      },
+      "unit": "s09.3"
+     },
+     {
+      "start": 380.196,
+      "end": 383.868,
+      "text": {
+       "zh-TW": "而 IDA、Hopper 這些商業工具要合法授權，",
+       "en-US": "and commercial tools like IDA and Hopper need proper licenses,",
+       "vi-VN": "còn công cụ thương mại như IDA, Hopper cần giấy phép hợp lệ,",
+       "ja-JP": "またIDAやHopperなどの商用ツールは正規ライセンスが必要で、"
+      },
+      "unit": "s09.4"
+     },
+     {
+      "start": 384.43,
+      "end": 387.343,
+      "text": {
+       "zh-TW": "分析的對象也要是你有權研究的軟體。",
+       "en-US": "and the software you analyze must be yours to study.",
+       "vi-VN": "và phần mềm phân tích phải là thứ bạn có quyền nghiên cứu.",
+       "ja-JP": "解析対象も調べる権利のあるソフトに限られます。"
+      },
+      "unit": "s09.4"
+     },
+     {
+      "start": 388.029,
+      "end": 394.52,
+      "text": {
+       "zh-TW": "還有，下載要認明官方來源：爆紅之後，就出現過夾帶木馬的山寨版。",
+       "en-US": "And download only from official sources: after it went viral, fake copies carrying trojans appeared.",
+       "vi-VN": "Ngoài ra, chỉ tải từ nguồn chính thức: sau khi nổi tiếng, đã xuất hiện bản nhái chứa trojan.",
+       "ja-JP": "それに、入手は公式からだけに。話題になった後、トロイの木馬入りの偽物が出回りました。"
+      },
+      "unit": "s09.5"
+     },
+     {
+      "start": 397.271,
+      "end": 399.525,
+      "text": {
+       "zh-TW": "這波熱潮，留下三個訊號。",
+       "en-US": "This wave of hype leaves three signals.",
+       "vi-VN": "Làn sóng này để lại ba tín hiệu.",
+       "ja-JP": "このブームは3つのシグナルを残しました。"
+      },
+      "unit": "s10.0"
+     },
+     {
+      "start": 400.099,
+      "end": 403.731,
+      "text": {
+       "zh-TW": "第一，舊工具接上代理人，是質變：",
+       "en-US": "First, connecting old tools to agents is a change in kind:",
+       "vi-VN": "Thứ nhất, nối công cụ cũ vào tác tử là thay đổi về chất:",
+       "ja-JP": "1つ目、古い道具とエージェントの接続は質的な変化。"
+      },
+      "unit": "s10.1"
+     },
+     {
+      "start": 404.316,
+      "end": 407.249,
+      "text": {
+       "zh-TW": "工具存在，不等於一般人用得起來。",
+       "en-US": "a tool existing doesn't mean ordinary people can use it.",
+       "vi-VN": "công cụ tồn tại không có nghĩa người thường dùng được.",
+       "ja-JP": "道具があることと、誰でも使えることは別です。"
+      },
+      "unit": "s10.1"
+     },
+     {
+      "start": 408.238,
+      "end": 411.168,
+      "text": {
+       "zh-TW": "第二，參考物是最好的規格書；",
+       "en-US": "Second, a reference product is the best spec;",
+       "vi-VN": "Thứ hai, sản phẩm tham chiếu là bản đặc tả tốt nhất;",
+       "ja-JP": "2つ目、お手本は最高の仕様書。"
+      },
+      "unit": "s10.2"
+     },
+     {
+      "start": 411.727,
+      "end": 413.689,
+      "text": {
+       "zh-TW": "但要做多少，邊界還是得自己畫。",
+       "en-US": "but how much to build is still your call.",
+       "vi-VN": "nhưng làm đến đâu thì bạn vẫn phải tự vạch ranh giới.",
+       "ja-JP": "ただし、どこまで作るかの線引きは自分で決めること。"
+      },
+      "unit": "s10.2"
+     },
+     {
+      "start": 414.471,
+      "end": 420.243,
+      "text": {
+       "zh-TW": "這也適用在寫企劃：給 AI 一份好範本，比給一堆形容詞有用。",
+       "en-US": "The same goes for writing proposals: giving AI one good template beats a pile of adjectives.",
+       "vi-VN": "Điều này cũng đúng khi viết kế hoạch: đưa AI một bản mẫu tốt hiệu quả hơn cả đống tính từ.",
+       "ja-JP": "企画書でも同じで、AIには形容詞を並べるより、良いお手本を一つ渡す方が効きます。"
+      },
+      "unit": "s10.3"
+     },
+     {
+      "start": 421.232,
+      "end": 422.919,
+      "text": {
+       "zh-TW": "第三，這是推測：",
+       "en-US": "Third, and this is a guess:",
+       "vi-VN": "Thứ ba, đây là suy đoán:",
+       "ja-JP": "3つ目は推測ですが、"
+      },
+      "unit": "s10.4"
+     },
+     {
+      "start": 423.403,
+      "end": 427.783,
+      "text": {
+       "zh-TW": "主流的程式代理人，很可能遲早內建類似的能力。",
+       "en-US": "mainstream coding agents will likely build in similar abilities sooner or later.",
+       "vi-VN": "các tác tử lập trình phổ biến nhiều khả năng sớm muộn sẽ tích hợp năng lực tương tự.",
+       "ja-JP": "主要なコーディングエージェントもいずれ似た機能を内蔵するでしょう。"
+      },
+      "unit": "s10.4"
+     },
+     {
+      "start": 430.485,
+      "end": 433.386,
+      "text": {
+       "zh-TW": "那軟體公司的護城河，會消失嗎？",
+       "en-US": "So, will software companies lose their moat?",
+       "vi-VN": "Vậy hào lũy của các công ty phần mềm có biến mất không?",
+       "ja-JP": "では、ソフトウェア企業の堀は消えるのでしょうか。"
+      },
+      "unit": "s11.0"
+     },
+     {
+      "start": 434.106,
+      "end": 437.998,
+      "text": {
+       "zh-TW": "單一功能的小工具，確實越來越容易被復刻。",
+       "en-US": "Small single-feature tools are indeed getting easier to copy.",
+       "vi-VN": "Các công cụ nhỏ một tính năng quả thật ngày càng dễ bị sao chép.",
+       "ja-JP": "単機能の小さなツールは、確かにますます再現しやすくなっています。"
+      },
+      "unit": "s11.1"
+     },
+     {
+      "start": 438.34,
+      "end": 441.216,
+      "text": {
+       "zh-TW": "但功能只是冰山露出水面的一角；",
+       "en-US": "But features are just the tip of the iceberg;",
+       "vi-VN": "Nhưng tính năng chỉ là phần nổi của tảng băng;",
+       "ja-JP": "でも、機能は氷山の一角にすぎません。"
+      },
+      "unit": "s11.2"
+     },
+     {
+      "start": 441.784,
+      "end": 448.837,
+      "text": {
+       "zh-TW": "水面下還有同步架構、舊資料相容、客服、權限，",
+       "en-US": "below the surface are sync infrastructure, compatibility with old data, support, permissions,",
+       "vi-VN": "bên dưới là hạ tầng đồng bộ, tương thích dữ liệu cũ, hỗ trợ khách hàng, phân quyền,",
+       "ja-JP": "水面下には同期の仕組み、古いデータとの互換性、サポート、権限管理、"
+      },
+      "unit": "s11.3"
+     },
+     {
+      "start": 449.021,
+      "end": 450.891,
+      "text": {
+       "zh-TW": "以及使用者累積多年的資料。",
+       "en-US": "and years of users' data.",
+       "vi-VN": "và dữ liệu người dùng tích lũy nhiều năm.",
+       "ja-JP": "そして長年蓄積されたユーザーのデータがあります。"
+      },
+      "unit": "s11.3"
+     },
+     {
+      "start": 451.471,
+      "end": 455.966,
+      "text": {
+       "zh-TW": "對個人來說，量身打造一個工具變得很便宜；",
+       "en-US": "For individuals, building a tool tailored just for you has become cheap;",
+       "vi-VN": "Với cá nhân, tự may đo một công cụ cho riêng mình đã trở nên rẻ;",
+       "ja-JP": "個人にとって、自分専用のツールを作るのはぐっと安くなりました。"
+      },
+      "unit": "s11.4"
+     },
+     {
+      "start": 456.856,
+      "end": 461.823,
+      "text": {
+       "zh-TW": "要做成賣給大眾的產品，仍然是一場長期營運的硬仗。",
+       "en-US": "turning it into a product for the public is still a long, hard operating battle.",
+       "vi-VN": "biến nó thành sản phẩm bán cho đại chúng vẫn là cuộc chiến vận hành lâu dài và gian nan.",
+       "ja-JP": "それを一般向けの製品にするのは、今も長期運営という厳しい戦いです。"
+      },
+      "unit": "s11.5"
+     },
+     {
+      "start": 462.762,
+      "end": 466.185,
+      "text": {
+       "zh-TW": "從點子到雛形的距離被大幅拉近，",
+       "en-US": "The distance from idea to prototype has shrunk dramatically,",
+       "vi-VN": "Khoảng cách từ ý tưởng đến bản mẫu đã rút ngắn rất nhiều,",
+       "ja-JP": "アイデアから試作品までの距離は大きく縮みましたが、"
+      },
+      "unit": "s11.6"
+     },
+     {
+      "start": 466.437,
+      "end": 470.472,
+      "text": {
+       "zh-TW": "但雛形到產品，還是軟體工程的本質。",
+       "en-US": "but prototype to product is still the core of software engineering.",
+       "vi-VN": "nhưng từ bản mẫu đến sản phẩm vẫn là bản chất của kỹ thuật phần mềm.",
+       "ja-JP": "試作品から製品までは、今もソフトウェア工学の本質です。"
+      },
+      "unit": "s11.6"
+     },
+     {
+      "start": 471.139,
+      "end": 475.335,
+      "text": {
+       "zh-TW": "所以，使用 REA 時，目標越聚焦越好。",
+       "en-US": "So when you use REA, the more focused your goal, the better.",
+       "vi-VN": "Vì vậy, khi dùng REA, mục tiêu càng tập trung càng tốt.",
+       "ja-JP": "だからREAを使うときは、目標を絞るほど効果的です。"
+      },
+      "unit": "s11.7"
+     }
+    ]
+   }
+  }
+ },
+ "voice": {
+  "provider": "gemini",
+  "model": "gemini-3.8-flash-tts",
+  "voice": "Charon"
+ },
+ "style": {
+  "primary": "工程藍圖與剖面",
+  "secondary": "極簡向量圖解"
+ },
+ "font_assets": [
+  {
+   "family": "Lesson Sans",
+   "url": "fonts/NotoSansTC.subset.woff2"
+  },
+  {
+   "family": "Lesson JP",
+   "url": "fonts/NotoSansJP.subset.woff2"
+  },
+  {
+   "family": "Lesson Latin",
+   "url": "fonts/NotoSans.subset.woff2"
+  },
+  {
+   "family": "Lesson Mono",
+   "url": "fonts/JetBrainsMono.subset.woff2"
+  }
+ ]
+}

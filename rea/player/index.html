@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REA 與 AI 逆向工程</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#061629;color:#eaf4ff;font-family:"Lesson Sans","Noto Sans TC",sans-serif}
+#caption2:lang(ja){font-family:"Lesson JP","Noto Sans JP",sans-serif}
+#caption2:lang(vi),#caption2:lang(en){font-family:"Lesson Latin","Noto Sans",sans-serif}
+button,select{font:inherit;background:#12304f;color:#eaf4ff;border:1px solid #3d6a94;border-radius:9px;padding:9px 14px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #ffc857}
+#shell{margin:auto;max-width:1400px;padding:20px}
+#viewport{position:relative;overflow:hidden;border-radius:18px;box-shadow:0 22px 80px #0008}
+#stage{position:relative;transform-origin:top left;overflow:hidden;background:radial-gradient(ellipse at 60% 45%,#123f6b 0,#0b2c50 55%,#071d36 100%)}
+#stage:before,#stage:after{content:"";position:absolute;inset:0;pointer-events:none}
+#stage:before{background-image:linear-gradient(#cfe6ff0c 1px,transparent 1px),linear-gradient(90deg,#cfe6ff0c 1px,transparent 1px);background-size:24px 24px}
+#stage:after{background-image:linear-gradient(#cfe6ff1c 1px,transparent 1px),linear-gradient(90deg,#cfe6ff1c 1px,transparent 1px);background-size:120px 120px}
+.mono{font-family:"Lesson Mono","Lesson Sans",monospace}
+#eyebrow{position:absolute;left:96px;top:54px;font-size:24px;letter-spacing:4px;color:#8fd0ff}
+#heading{position:absolute;left:96px;top:96px;width:1200px;margin:0;font-size:72px;font-weight:700;line-height:1.5;z-index:2}
+#subheading{position:absolute;left:96px;top:212px;width:1200px;margin:0;font-size:32px;color:#b7cfe6}
+#titleblock{position:absolute;right:96px;top:58px;width:360px;border:2px solid #cfe6ff88;font-size:20px;color:#cfe6ff}
+#titleblock div{display:flex;border-top:1px solid #cfe6ff55;padding:7px 12px;gap:12px}#titleblock div:first-child{border-top:0}
+#titleblock b{font-weight:400;color:#8fb3d6;min-width:64px}
+#visual{position:absolute;left:96px;top:262px;width:1728px;height:618px}
+#diagram{display:block;width:100%;height:100%;overflow:hidden}
+/* diagram vocabulary */
+.ink{fill:#eaf4ff}.dim{fill:#8fb3d6}.amber{fill:#ffc857}.green{fill:#8ef0c0}.blue{fill:#8fd0ff}.red{fill:#ff8a7a}
+.t26{font-size:26px}.t28{font-size:28px}.t30{font-size:30px}.t34{font-size:34px}.t40{font-size:40px}.b{font-weight:700}
+.panel{fill:#0b2c50d9;stroke:#cfe6ff80;stroke-width:2}
+.panel-hi{fill:#3a2e0a99;stroke:#ffc857;stroke-width:2.5}
+.panel-ok{fill:#0d3a2ccc;stroke:#8ef0c0;stroke-width:2}
+.panel-bad{fill:#3a1414cc;stroke:#ff8a7a;stroke-width:2}
+.line{fill:none;stroke:#cfe6ff;stroke-width:2.2}
+.dash{fill:none;stroke:#cfe6ff99;stroke-width:2;stroke-dasharray:9 8}
+.arrow{fill:none;stroke:#ffc857;stroke-width:3.5}
+.face-top{fill:#a9d4ff1a}.face-front{fill:#a9d4ff2e}.face-side{fill:#a9d4ff12}
+.edge{stroke:#d9eeff;stroke-width:2.2;stroke-linejoin:round}
+.code-bg{fill:#061629cc;stroke:#ffc85766;stroke-width:1.5}
+.term{fill:#030c17;stroke:#3d6a94;stroke-width:2}
+#caption{position:absolute;left:7%;bottom:5%;width:86%;height:13%;z-index:3;border:1px solid #8fd0ff33;border-radius:16px;background:#061a30ec;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 24px;text-align:center;gap:8px;font-size:42px;line-height:1.3}
+#caption .secondary{font-size:32px;color:#bcd3e8}
+#credit{position:absolute;left:12%;top:30%;width:76%;height:34%;display:none;align-items:center;justify-content:center;flex-direction:column;gap:26px;border:2px solid #cfe6ffaa;font-size:88px;letter-spacing:12px;background:#0b2c50cc}
+#credit small{font-size:26px;letter-spacing:8px;color:#8fd0ff}
+#credit:before{content:"";position:absolute;inset:14px;border:1px dashed #cfe6ff55;pointer-events:none}
+#progress-mark{position:absolute;height:5px;background:#ffc857;left:0;bottom:0}
+#controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:16px 0}
+#seek{flex:1;min-width:170px}#time{font-variant-numeric:tabular-nums;color:#b4cad8}
+.interaction{padding:18px;border:1px solid #3d6a94;border-radius:14px;background:#0b2440;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+#feedback{color:#9fe3c4;margin:0;flex:1;min-width:260px}
+.note{font-size:13px;color:#8fb3d6}
+body.export #shell{padding:0;max-width:none}body.export #viewport{border-radius:0;box-shadow:none}
+body.export #controls,body.export .interaction,body.export .note{display:none}
+</style>
+<div id="shell">
+<div id="viewport"><main id="stage" aria-label="教學動畫畫面">
+<div id="eyebrow" class="mono"></div>
+<h1 id="heading" data-qa data-container="#stage"></h1>
+<p id="subheading" data-qa data-container="#stage"></p>
+<div id="titleblock" class="mono" data-qa data-container="#stage"><div><b>圖號</b><span id="tb-no"></span></div><div><b>比例</b><span id="tb-note"></span></div></div>
+<div id="visual" data-qa data-container="#stage"><svg id="diagram" viewBox="0 0 1728 618" aria-label="教學圖解"></svg></div>
+<div id="credit" data-qa data-container="#stage"><small>感謝觀看</small><strong>李振偉老師</strong></div>
+<div id="caption" data-qa data-container="#stage"><div id="caption1"></div><div id="caption2" class="secondary"></div></div>
+<div id="progress-mark"></div>
+</main></div>
+<nav id="controls" aria-label="播放控制">
+<button id="play">播放</button><button id="replay">重播</button>
+<input id="seek" type="range" min="0" step="1" value="0" aria-label="播放進度">
+<span id="time"></span>
+<select id="locale" aria-label="配音語言"><option value="zh-TW">中文配音</option><option value="en-US">英文配音</option></select>
+<select id="subs" aria-label="字幕語言"><option value="en-US">中英字幕</option><option value="vi-VN">中越字幕</option><option value="ja-JP">中日字幕</option></select>
+<select id="chapters" aria-label="章節"></select><button id="captions" aria-pressed="true">字幕開啟</button>
+</nav>
+<section class="interaction" aria-label="教學互動">
+<label for="target">挑一個想拆的目標</label>
+<select id="target"><option value="native">原生程式</option><option value="electron">Electron 桌面 App</option><option value="web">網頁</option><option value="cloud">雲端同步功能</option></select>
+<button id="goto-layers">到第 5 幕看路徑</button>
+<p id="feedback" role="status"></p>
+</section>
+<p class="note">圖解皆為示意，不代表真實比例。鍵盤：空白鍵播放／暫停，← → 前後 5 秒。</p>
+</div>
+<script>
+// Every visible state is a pure function of frame, narration locale, subtitle pair and the target selection.
+const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),NS='http://www.w3.org/2000/svg';
+const exporting=params.get('export')==='1';if(exporting)document.body.classList.add('export');
+const SUBS=['en-US','vi-VN','ja-JP'];
+let project,frame=0,locale=params.get('locale')||'zh-TW',subs=SUBS.includes(params.get('captions'))?params.get('captions'):'en-US',
+  playing=false,captionOn=!exporting||SUBS.includes(params.get('captions')),target='native',last=0,audio=new Audio(),audioReady=false;
+const clamp=x=>Math.min(1,Math.max(0,x)),smooth=x=>{x=clamp(x);return x*x*(3-2*x)},outCubic=x=>1-Math.pow(1-clamp(x),3),mix=(a,b,k)=>a+(b-a)*k;
+const SEC={origin:'起源',principle:'原理',comparison:'比較',application:'應用',outlook:'展望'};
+const NOTE={s01:'資料：git 紀錄',s02:'資料：git 紀錄',s03:'示意',s04:'示意',s05:'示意，非真實比例',s06:'示意',s07:'定性比較',s08:'本片實測＋參考影片',s09:'示意',s10:'截至 2026-10-17',s11:'示意'};
+const TARGETS={
+  native:{detail:'Ghidra・Hopper・IDA・JADX',feedback:'原生程式需要反編譯引擎：REA 會呼叫 Ghidra、Hopper 或 IDA 把機器碼還原成偽程式碼。'},
+  electron:{detail:'REA 內建 JavaScript 分析',feedback:'Electron App 是打包好的 JavaScript：REA 直接讀模組與 IPC 關係，不必動用反編譯器。'},
+  web:{detail:'瀏覽器觀察：結構・腳本・請求',feedback:'網頁看頁面結構、載入的腳本與網路請求，用 Chrome 系瀏覽器觀察即可。'},
+  cloud:{detail:'✕ 伺服器端程式不在你手上',feedback:'核心邏輯在遠端伺服器：本機抓得到請求和回應，拿不到後端程式——這在 REA 的能力邊界外。'}};
+
+// ---------- SVG helpers ----------
+const svg=$('diagram');
+function E(tag,attrs={},parent=svg){const n=document.createElementNS(NS,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);parent.append(n);return n}
+function G(parent,attrs={}){return E('g',attrs,parent)}
+function T(parent,x,y,str,cls='ink t30',attrs={}){const n=E('text',{x,y,class:cls,...attrs},parent);n.textContent=str;return n}
+function lines(parent,x,y,arr,cls,lh,attrs={}){return arr.map((s,i)=>T(parent,x,y+i*lh,s,cls,attrs))}
+function R(parent,x,y,w,h,cls='panel',rx=10){return E('rect',{x,y,width:w,height:h,rx,class:cls},parent)}
+function corners(parent,x,y,w,h){const d=14;E('path',{class:'line','stroke-width':3,d:`M${x},${y+d}V${y}H${x+d}M${x+w-d},${y}H${x+w}V${y+d}M${x+w},${y+h-d}V${y+h}H${x+w-d}M${x+d},${y+h}H${x}V${y+h-d}`},parent)}
+function arrowHead(parent,x,y,ang,color='#ffc857',size=14){const a=ang*Math.PI/180,p=(r,da)=>[x-size*Math.cos(a+da),y-size*Math.sin(a+da)];const [x1,y1]=p(0,.45),[x2,y2]=p(0,-.45);return E('path',{d:`M${x1},${y1}L${x},${y}L${x2},${y2}`,fill:'none',stroke:color,'stroke-width':3.5,'stroke-linejoin':'round'},parent)}
+function show(node,v,dy=14){node.style.opacity=v;node.style.transform=`translate(0px,${((1-v)*dy).toFixed(2)}px)`}
+function draw_line(path,v){const L=path.getTotalLength?path.getTotalLength():1000;path.style.strokeDasharray=`${L} ${L}`;path.style.strokeDashoffset=String(L*(1-v))}
+const qa=(node,id,group)=>{node.dataset.b=id;if(group)node.dataset.og=group;return node};
+
+// ---------- scene builders ----------
+// Each builder returns draw(c) where c.p(i,dur,delay) is the eased progress of beat i (meaning unit i).
+const BUILD={};
+
+BUILD.s01=g=>{
+  const days=[1,1,6,105,176,195,134,366,258,307,167,332,296,154,114,74];
+  const chart=qa(G(g),'s01-chart','s01-chart');T(chart,40,40,'每日提交數・2026 年 10 月 2–17 日','dim t26');
+  E('line',{x1:40,y1:560,x2:780,y2:560,class:'line'},chart);
+  const bars=days.map((v,i)=>E('rect',{x:52+i*46,width:30,y:560,height:0,fill:'#8fd0ff'},chart));
+  [0,3,6,9,12,15].forEach(i=>T(chart,67+i*46,596,`10/${i+2}`,'dim t26',{'text-anchor':'middle'}));
+  T(chart,52+13*46+15,90,'10/15 宣布 25 萬星','amber t26',{'text-anchor':'middle'});
+  const mark=E('line',{x1:52+13*46+15,y1:100,x2:52+13*46+15,y2:540,class:'dash'},chart);
+  const counter=qa(G(g),'s01-counter');const num=T(counter,900,120,'0','amber b',{style:'font-size:104px'});T(counter,904,170,'GitHub 星星（README 里程碑）','dim t26');
+  const word=qa(G(g),'s01-word');T(word,900,320,'REA','ink b',{style:'font-size:116px'});
+  const exp=T(word,1170,300,'','ink t40');[['R','everse '],['E','ngineer '],['A','nything']].forEach(([a,b])=>{const s1=E('tspan',{class:'amber b'},exp);s1.textContent=a;const s2=E('tspan',{},exp);s2.textContent=b});
+  const meaning=T(word,1172,350,'逆向工程任何東西','green t34 b');
+  const cards=[['老遊戲的玩法','→ 用 Rust 重寫','game'],['射擊遊戲第 1 關','→ 搬上網頁','web']].map(([a,b,kind],i)=>{const c=qa(G(g),'s01-card'+i),x=900+i*420;R(c,x,410,390,190);
+    if(kind==='game'){E('rect',{x:x+24,y:450,width:110,height:64,rx:30,class:'line'},c);E('path',{class:'line',d:`M${x+50},482h24M${x+62},470v24`},c);E('circle',{cx:x+106,cy:474,r:6,class:'line'},c);E('circle',{cx:x+118,cy:488,r:6,class:'line'},c)}
+    else{E('rect',{x:x+24,y:440,width:110,height:84,rx:8,class:'line'},c);E('line',{x1:x+24,y1:460,x2:x+134,y2:460,class:'line'},c);E('path',{class:'line',d:`M${x+44},505l18-22l18,14l22-26`},c)}
+    T(c,x+152,476,a,'ink t28 b');T(c,x+152,518,b,'green t28');T(c,x+24,572,'社群 Demo（參考影片）','dim t26');return c});
+  const stamp=qa(G(g,{transform:'rotate(-5 410 250)'}),'s01-stamp','s01-chart');R(stamp,180,190,470,110,'panel-hi');T(stamp,415,236,'故事的起點','amber t28',{'text-anchor':'middle'});T(stamp,415,282,'2026-04-14','amber b mono',{'text-anchor':'middle',style:'font-size:44px'});
+  return c=>{
+    bars.forEach((b,i)=>{const k=outCubic(c.p(0,1.2,i*.05));const h=days[i]/366*400*k;b.setAttribute('y',560-h);b.setAttribute('height',h);b.style.fill=i===13&&c.p(1)>0?'#ffc857':'#8fd0ff'});
+    show(chart,c.p(0,.6));mark.style.opacity=c.p(1);
+    show(counter,c.p(1));num.textContent=Math.round(250000*outCubic(c.p(1,1.4))).toLocaleString('en-US')+(c.p(1,1.4)>=1?'+':'');
+    show(word,c.p(2));meaning.style.opacity=c.p(3);
+    cards.forEach((k,i)=>show(k,c.p(4+i),24));
+    show(stamp,c.p(6),-20);if(c.p(6)>0){chart.style.opacity=mix(1,.35,c.p(6))}
+  }};
+
+BUILD.s02=g=>{
+  const X=d=>80+d/213*1570;
+  const axis=qa(G(g),'s02-axis','s02-axis');E('line',{x1:80,y1:60,x2:1650,y2:60,class:'line'},axis);
+  ['4月','5月','6月','7月','8月','9月','10月'].forEach((m,i)=>{const d=[0,30,61,91,122,153,183][i];E('line',{x1:X(d),y1:52,x2:X(d),y2:68,class:'line'},axis);T(axis,X(d)+6,40,m,'dim t26')});
+  const ms=(d,lbl,cls,anchor='start',dy=110)=>{const n=G(g);E('path',{d:`M${X(d)},48l12,12l-12,12l-12-12z`,fill:'#ffc857'},n);T(n,X(d)+(anchor==='end'?12:-12),dy,lbl,cls,{'text-anchor':anchor});return qa(n,'s02-'+d,'s02-axis')};
+  const m1=ms(13,'2026-04-14 首次提交','amber t30 b'),name=qa(T(g,68,150,'betterBinaryMCP','ink t30 mono'),'s02-name');
+  const hopper=qa(G(g),'s02-hopper');R(hopper,68,170,330,46,'panel');T(hopper,84,203,'讓 AI 操作 Hopper','ink t26');
+  const m2=ms(102,'07-12 改名 REA・發布 npm','amber t30 b');
+  const scope=qa(G(g),'s02-scope');T(scope,820,162,'原生程式 → 網頁 → 桌面 App → 手機 App','green t26');
+  const m3=ms(188,'10 月登上熱門榜','amber t30 b','end');
+  const chart=qa(G(g),'s02-chart','s02-chart');T(chart,80,262,'每月提交數（10 月統計至 17 日）','dim t26');E('line',{x1:80,y1:560,x2:1650,y2:560,class:'line'},chart);
+  const data=[['4月',15,1],['7月',106,697],['8月',137,21],['9月',167,100],['10月',198,2686]];
+  const bars=data.map(([m,d,v])=>{const r=E('rect',{x:X(d)-50,width:100,y:560,height:0,fill:'#8fd0ff'},chart);const t=T(chart,X(d),550,v.toLocaleString('en-US'),'ink t28 b mono',{'text-anchor':'middle'});T(chart,X(d),596,m,'dim t26',{'text-anchor':'middle'});return{r,t,v}});
+  const reasons=[['一句話就說得懂','看到喜歡的功能，叫 AI 拆給你看'],['戳中一個焦慮','什麼都拆得開，軟體公司守得住嗎？']].map(([a,b],i)=>{const c=qa(G(g),'s02-reason'+i,'s02-chart'),x=120+i*760;R(c,x,300,700,190,i?'panel-bad':'panel-hi');T(c,x+34,360,(i?'② ':'① ')+a,(i?'red':'amber')+' t34 b');T(c,x+34,420,b,'ink t30');T(c,x+34,462,'爆紅原因','dim t26');return c});
+  const beatFor=[1,4,5,5,6];
+  return c=>{
+    show(axis,c.p(0,.6));show(m1,c.p(1));show(name,c.p(2));show(hopper,c.p(3));show(m2,c.p(4));show(scope,c.p(5));show(m3,c.p(6));
+    show(chart,c.p(1));
+    bars.forEach((b,i)=>{const k=outCubic(c.p(beatFor[i],1.2,i===2?.3:i===3?.6:0));const h=b.v/2686*230*k;b.r.setAttribute('y',560-h);b.r.setAttribute('height',h);b.t.setAttribute('y',548-h);b.t.style.opacity=k;b.r.style.fill=i===4?'#ffc857':'#8fd0ff'});
+    const dimmed=c.p(7);chart.style.opacity=Math.min(c.p(1),mix(1,.1,dimmed));
+    reasons.forEach((r,i)=>show(r,c.p(7+i),24));
+  }};
+
+BUILD.s03=g=>{
+  const box=(x,w,title,cls='panel')=>{const n=G(g);R(n,x,40,w,170,cls);T(n,x+w/2,80,title,'ink t30 b',{'text-anchor':'middle'});return n};
+  const src=qa(box(40,300,'原始碼'),'s03-src');lines(src,64,124,['// 搜尋筆記','find(query) {','  match(query)'],'green t26 mono',30);
+  const comp=qa(box(430,260,'編譯器'),'s03-comp');const gear=G(comp,{transform:'translate(560,150)'});E('circle',{r:34,class:'line'},gear);for(let k=0;k<8;k++)E('rect',{x:-6,y:-46,width:12,height:14,fill:'#cfe6ff',transform:`rotate(${k*45})`},gear);E('circle',{r:12,class:'line'},gear);
+  const bin=qa(box(780,300,'機器碼'),'s03-bin');lines(bin,800,124,['55 48 89 E5 48 83','EC 20 89 7D EC 8B','45 EC 0F AF C0 C9'],'dim t26 mono',30);
+  const app=qa(box(1170,260,'App 成品'),'s03-app');E('path',{class:'line',d:'M1260,110l40-20l40,20v60l-40,20l-40-20zM1260,110l40,20l40-20M1300,130v60'},app);
+  const arrows=[[340,430],[690,780],[1080,1170]].map(([a,b])=>{const n=G(g);E('line',{x1:a+8,y1:125,x2:b-10,y2:125,stroke:'#cfe6ff','stroke-width':3},n);arrowHead(n,b-8,125,0,'#cfe6ff');return n});
+  const lost=['// 註解','query','match'].map((s,i)=>{const n=G(g);T(n,0,0,s,'amber t26 mono');T(n,0,30,'✕ 丟失','red t26');return n});
+  const sign=qa(G(g),'s03-sign');R(sign,1470,60,230,110,'panel-bad');T(sign,1585,105,'單行道','red t34 b',{'text-anchor':'middle'});T(sign,1585,148,'資訊只出不回','ink t26',{'text-anchor':'middle'});
+  const rev=G(g);const rp=E('path',{d:'M1300,232 C1300,300 230,300 190,240',class:'arrow','stroke-dasharray':'14 10'},rev);arrowHead(rev,190,240,235);qa(T(rev,745,320,'逆向工程：從成品倒推回去','amber t34 b',{'text-anchor':'middle'}),'s03-rev');
+  const study=['結構','資料怎麼流動','邏輯怎麼運作'].map((s,i)=>{const n=qa(G(g),'s03-study'+i);const x=40+i*270;R(n,x,370,250,62,'panel');T(n,x+125,412,s,'ink t28',{'text-anchor':'middle'});return n});
+  const uses=qa(G(g),'s03-uses');T(uses,40,490,'常見用途','dim t26');['相容性','資安檢查','保存停產軟體'].forEach((s,i)=>{const x=40+[0,200,400][i];R(uses,x,510,[180,180,260][i],58,'panel-ok');T(uses,x+[90,90,130][i],549,s,'green t28',{'text-anchor':'middle'})});
+  const watch=qa(G(g),'s03-watch');T(watch,1450,330,'沒有設計圖的機械錶','ink t28',{'text-anchor':'middle'});
+  E('circle',{cx:1450,cy:478,r:118,class:'line','stroke-width':4},watch);E('rect',{x:1440,y:344,width:20,height:16,class:'line'},watch);
+  for(let k=0;k<12;k++)E('line',{x1:1450,y1:372,x2:1450,y2:384,stroke:'#cfe6ff','stroke-width':3,transform:`rotate(${k*30} 1450 478)`},watch);
+  const gears=G(watch);const mkGear=(cx,cy,r,n)=>{const gg=G(gears,{transform:`translate(${cx},${cy})`});E('circle',{r,class:'line',fill:'#0b2c50'},gg);for(let k=0;k<n;k++)E('rect',{x:-4,y:-r-9,width:8,height:10,fill:'#ffc857',transform:`rotate(${k*360/n})`},gg);E('circle',{r:5,fill:'#ffc857'},gg);return gg};
+  const g1=mkGear(1418,450,44,12),g2=mkGear(1490,506,30,9),g3=mkGear(1478,420,20,7);
+  const cover=E('circle',{cx:1450,cy:478,r:110,fill:'#1c4a78'},watch);
+  const hands=G(watch);const hm=E('line',{x1:1450,y1:478,x2:1450,y2:410,stroke:'#eaf4ff','stroke-width':5,'stroke-linecap':'round'},hands),hs=E('line',{x1:1450,y1:478,x2:1450,y2:392,stroke:'#ffc857','stroke-width':2.5},hands);
+  const acts=[['聽它走動',1240,430],['按按看',1630,420],['打開後蓋',1600,600]].map(([s,x,y])=>T(watch,x,y,s,'green t26',{'text-anchor':'middle'}));
+  return c=>{
+    show(src,c.p(1));[comp,bin,app].forEach((n,i)=>show(n,c.p(2,.6,i*.35)));arrows.forEach((n,i)=>n.style.opacity=c.p(2,.5,i*.35));
+    gear.setAttribute('transform',`translate(560,150) rotate(${c.local*40})`);
+    lost.forEach((n,i)=>{const k=c.p(3,1.4,i*.25);n.setAttribute('transform',`translate(${110+i*80+k*260},${120-k*110})`);n.style.opacity=k>0?(k<.85?1:(1-k)/.15):0});
+    show(sign,c.p(3,.6,.5));
+    rev.style.opacity=c.p(4,.3);draw_line(rp,c.p(4,1.2));
+    study.forEach((n,i)=>show(n,c.p(5,.6,i*.3)));show(uses,c.p(6));
+    show(watch,c.p(7),-14);hm.setAttribute('transform',`rotate(${c.local*6} 1450 478)`);hs.setAttribute('transform',`rotate(${c.local*72} 1450 478)`);
+    const open=c.p(8,1.2,1.2);cover.setAttribute('cx',1450+open*90);cover.style.opacity=1-open;hands.style.opacity=1-open*.7;
+    g1.setAttribute('transform',`translate(1418,450) rotate(${c.local*30})`);g2.setAttribute('transform',`translate(1490,506) rotate(${-c.local*44})`);g3.setAttribute('transform',`translate(1478,420) rotate(${-c.local*66})`);
+    acts.forEach((a,i)=>a.style.opacity=c.p(8,.5,i*.8));
+  }};
+
+BUILD.s04=g=>{
+  const tools=['Ghidra','IDA','Hopper'].map((s,i)=>{const n=qa(G(g),'s04-tool'+i);R(n,0,i*74,520,60,'panel');T(n,24,i*74+41,s,'ink t30 b mono');T(n,500,i*74+41,'反編譯器','dim t26',{'text-anchor':'end'});return n});
+  const code=qa(G(g),'s04-code');R(code,0,250,520,230,'term');
+  const hex=T(code,22,292,'55 48 89 E5 89 7D EC 8B 45','dim t26 mono');
+  const pseudo=lines(code,22,336,['int sub_401A20(int a1) {','  int v3 = a1 * a1;','  return v3;','}'],'green t26 mono',34);
+  const marks=G(code);[[62,342,160],[94,376,34]].forEach(([x,y,w])=>E('line',{x1:22+x,y1:y,x2:22+x+w,y2:y,stroke:'#ff8a7a','stroke-width':3},marks));
+  const note=qa(T(g,0,530,'名字全沒了，還得一行行驗證','red t28'),'s04-note');
+  const grid=qa(G(g),'s04-grid');T(grid,640,32,'上千個函式','dim t26');const cells=[];
+  for(let r=0;r<22;r++)for(let k=0;k<44;k++)cells.push(E('rect',{x:640+k*24,y:46+r*22,width:18,height:16,fill:'#8fd0ff33'},grid));
+  const lens=G(g);E('circle',{r:58,class:'line','stroke-width':4,fill:'#ffc85722'},lens);E('line',{x1:41,y1:41,x2:84,y2:84,stroke:'#cfe6ff','stroke-width':8,'stroke-linecap':'round'},lens);
+  const ask=qa(T(g,1168,585,'該從哪一個下刀？','amber t34 b',{'text-anchor':'middle'}),'s04-ask');
+  const path=[[3,4],[3,9],[7,9],[7,15],[11,15],[11,22],[15,22],[15,30],[18,30],[18,37]];const pathCells=[];
+  for(let i=0;i<path.length-1;i++){const[a,b]=path[i],[c2,d]=path[i+1];for(let r=Math.min(a,c2);r<=Math.max(a,c2);r++)for(let k=Math.min(b,d);k<=Math.max(b,d);k++)pathCells.push(r*44+k)}
+  const expert=qa(T(g,1690,585,'只存在專家的經驗裡','green t30 b',{'text-anchor':'end'}),'s04-expert');
+  return c=>{
+    tools.forEach((n,i)=>show(n,c.p(1,.6,i*.25)));show(code,c.p(2));
+    const sw=c.p(2,.8,1.4);hex.style.opacity=1-sw;pseudo.forEach(n=>n.style.opacity=sw);marks.style.opacity=c.p(3,.6,.6);show(note,c.p(3,.6,.8));
+    show(grid,c.p(4));const lk=c.p(5,.4),tt=c.local*.7;lens.style.opacity=lk*(1-c.p(6,.5));lens.setAttribute('transform',`translate(${1168+380*Math.sin(tt)},${280+150*Math.sin(tt*1.7)})`);
+    show(ask,c.p(5,.6,.4));ask.style.opacity=Math.min(c.p(5,.6,.4),1-c.p(6,.5));
+    const lit=c.p(6,1.6);cells.forEach((n,i)=>n.style.fill='#8fd0ff33');pathCells.forEach((idx,j)=>{if(j/pathCells.length<lit)cells[idx].style.fill='#ffc857'});
+    show(expert,c.p(6,.6,1.2));
+  }};
+
+BUILD.s05=g=>{
+  const Gm={x0:140,W:620,S:140,H:76,T:50,mid:316,spread:190,calloutX:1060};
+  const LAYERS=[{name:'代理人 AI',title:'① 代理人：理解需求',detail:'Claude Code・Codex・Cursor',color:'#8fd0ff'},{name:'REA',title:'② REA：翻譯官',detail:'MCP 工具＋Skill 辦案手冊',color:'#ffc857'},{name:'分析引擎',title:'③ 分析引擎：動手拆',detail:'',color:'#8ef0c0'}];
+  const dims=[0,1].map(i=>{const d=G(g);return{g:d,line:E('path',{class:'dash'},d),label:T(d,0,0,i?'橋接':'MCP','dim t26 mono',{'text-anchor':'end'})}});
+  const guide=E('path',{fill:'none',stroke:'#ffc857','stroke-width':2,'stroke-dasharray':'8 8'},g);
+  const slabs=[2,1,0].map(i=>{const n=qa(G(g),'s05-slab'+i,'s05-slabs');const s={i,g:n,top:E('polygon',{class:'face-top edge'},n),front:E('rect',{class:'face-front edge'},n),side:E('polygon',{class:'face-side edge'},n),label:T(n,0,0,LAYERS[i].name,'ink t30 b'),code:G(n)};
+    if(i===2){s.bg=E('rect',{class:'code-bg',x:-12,y:-30,width:268,height:44,rx:6},s.code);s.hex=T(s.code,8,2,'55 48 89 E5 48','amber t28 mono');s.pseudo=T(s.code,8,2,'find(q) { … }','amber t28 mono')}return s}).reverse();
+  const assembled=T(g,0,0,'App（成品）','ink t34 b',{'text-anchor':'middle'});
+  const callouts=LAYERS.map((L,i)=>{const n=qa(G(g),'s05-callout'+i);return{g:n,leader:E('path',{fill:'none',stroke:L.color,'stroke-width':2},n),dot:E('circle',{r:6,fill:L.color},n),title:T(n,0,0,L.title,'b',{style:`font-size:40px;fill:${L.color}`}),detail:T(n,0,0,'','t30',{style:'fill:#c6dbef'})}});
+  const packet=G(g),pc=E('circle',{r:26},packet),pt=T(packet,0,10,'?','b',{'text-anchor':'middle',style:'font-size:30px;fill:#061629'});
+  const Y=(i,sp)=>Gm.mid+(i-1)*sp;
+  return c=>{
+    const ex=c.p(1,1.6),squash=ex<.12?Math.sin(ex/.12*Math.PI)*.08:0,k=outCubic((ex-.12)/.88),sp=mix(Gm.T,Gm.spread,k)*(1-squash);
+    const{x0,W,S,H,T:TT}=Gm;show(g,c.p(0,.6),0);
+    slabs.forEach(sl=>{const y=Y(sl.i,sp);sl.top.setAttribute('points',`${x0},${y} ${x0+W},${y} ${x0+W+S},${y-H} ${x0+S},${y-H}`);
+      sl.front.setAttribute('x',x0);sl.front.setAttribute('y',y);sl.front.setAttribute('width',W);sl.front.setAttribute('height',TT);
+      sl.side.setAttribute('points',`${x0+W},${y} ${x0+W+S},${y-H} ${x0+W+S},${y-H+TT} ${x0+W},${y+TT}`);
+      sl.label.setAttribute('x',x0+24);sl.label.setAttribute('y',y+36);sl.label.style.opacity=smooth((ex-.35)/.4);
+      sl.front.style.fill=sl.i===1&&c.p(4)>0?'#ffc85730':'';
+      if(sl.hex){sl.code.setAttribute('transform',`translate(${x0+S/2+6},${y-H/2+6})`);const d=c.p(8,1.4),on=smooth((d-.5)/.15),sw=smooth((d-.8)/.15);sl.bg.style.opacity=on;sl.hex.style.opacity=on*(1-sw);sl.pseudo.style.opacity=sw}});
+    assembled.setAttribute('x',x0+W/2);assembled.setAttribute('y',Y(0,sp)-H-24);assembled.style.opacity=1-smooth(ex/.25);
+    dims.forEach((d,i)=>{const a=Y(i,sp)+TT,b=Y(i+1,sp),x=x0-46;d.line.setAttribute('d',`M${x-10},${a}H${x+10}M${x},${a}V${b}M${x-10},${b}H${x+10}`);d.label.setAttribute('x',x-18);d.label.setAttribute('y',(a+b)/2+9);d.g.style.opacity=c.p(i?7:4)});
+    const beatOf=[2,4,7];
+    callouts.forEach((cl,i)=>{const y=Y(i,sp)-H/2+TT/2,sx=x0+W+S+8,o=c.p(beatOf[i],.8),len=Gm.calloutX-sx;
+      cl.leader.setAttribute('d',`M${sx},${y}H${Gm.calloutX}`);cl.leader.style.strokeDasharray=len;cl.leader.style.strokeDashoffset=len*(1-o);
+      cl.dot.setAttribute('cx',sx);cl.dot.setAttribute('cy',y);cl.dot.style.opacity=o;
+      cl.title.setAttribute('x',Gm.calloutX+18);cl.title.setAttribute('y',y-6);cl.detail.setAttribute('x',Gm.calloutX+18);cl.detail.setAttribute('y',y+40);
+      const ready=smooth((ex-.9)/.1);cl.g.style.opacity=ready;cl.title.style.opacity=c.p(beatOf[i],.6,.3);cl.detail.style.opacity=c.p(i===1?5:beatOf[i]+(i===0?1:0),.6,.2)});
+    const cloud=target==='cloud',down=c.p(8,1.6),up=c.p(9,1.4),got=up>=.98;
+    callouts[2].detail.textContent=TARGETS[target].detail;callouts[2].detail.style.fill=cloud?'#ff8a7a':'#c6dbef';
+    callouts[0].detail.textContent=got?(cloud?'✕ 只拿到請求與回應，沒有後端程式':'✓ 收到證據：雜湊・程式位置・限制'):LAYERS[0].detail;callouts[0].detail.style.fill=got?(cloud?'#ff8a7a':'#9fe3c4'):'#c6dbef';
+    callouts[1].detail.textContent=LAYERS[1].detail;
+    const cx=x0+W/2+S/2,yT=Y(0,sp)-H/2,yB=Y(2,sp)-H/2;guide.setAttribute('d',`M${cx},${yT}V${yB}`);guide.style.opacity=down>0&&up<1?.9:0;
+    let py=null,ask=true;if(down>0&&down<1)py=mix(yT,yB,smooth(down/.55));if(up>0&&up<1){py=mix(yB,yT,smooth(up));ask=false}
+    packet.style.opacity=py===null?0:1;if(py!==null){packet.setAttribute('transform',`translate(${cx},${py})`);pc.setAttribute('fill',ask?'#ffc857':(cloud?'#ff8a7a':'#8ef0c0'));pt.textContent=ask?'?':(cloud?'✕':'✓')}
+  }};
+
+BUILD.s06=g=>{
+  const C=[300,290],Rr=200,pts=[[-90,'檢查目標'],[0,'追線索'],[90,'動手實作'],[180,'比對原版']].map(([a,s])=>[C[0]+Rr*Math.cos(a*Math.PI/180),C[1]+Rr*Math.sin(a*Math.PI/180),s]);
+  const loop=qa(G(g),'s06-loop','s06-loop');E('circle',{cx:C[0],cy:C[1],r:Rr,class:'dash'},loop);
+  const nodes=pts.map(([x,y,s])=>{const n=G(loop);R(n,x-95,y-30,190,60,'panel');T(n,x,y+11,s,'ink t28 b',{'text-anchor':'middle'});return n});
+  const dot=E('circle',{r:14,fill:'#ffc857'},loop);
+  const back=qa(G(g),'s06-back','s06-loop');const bp=E('path',{d:`M${C[0]-170},${C[1]-40} Q${C[0]},${C[1]-10} ${C[0]+150},${C[1]+20}`,class:'arrow',stroke:'#ff8a7a'},back);arrowHead(back,C[0]+150,C[1]+20,10,'#ff8a7a');
+  T(back,C[0],C[1]+76,'對不上 → 回頭補查','red t28 b',{'text-anchor':'middle'});
+  const head=qa(T(g,700,38,'目標不同，查法不同','dim t28'),'s06-head');
+  const rows=[['網頁','頁面結構・網路請求'],['Electron 桌面 App','模組之間的呼叫'],['原生程式','反編譯（Ghidra／IDA／Hopper）']].map(([a,b],i)=>{const n=qa(G(g),'s06-row'+i),y=58+i*74;R(n,700,y,300,60,'panel');T(n,850,y+40,a,'ink t28 b',{'text-anchor':'middle'});E('line',{x1:1010,y1:y+30,x2:1060,y2:y+30,stroke:'#ffc857','stroke-width':3},n);arrowHead(n,1068,y+30,0);T(n,1084,y+41,b,'green t28');return n});
+  const shot=qa(G(g),'s06-shot');R(shot,700,300,380,250,'panel');E('line',{x1:700,y1:336,x2:1080,y2:336,class:'line'},shot);T(shot,720,326,'截圖','dim t26');
+  R(shot,730,360,320,50,'panel-hi',25);T(shot,760,394,'🔍 搜尋筆記…','ink t26');[430,470,510].forEach(y=>E('rect',{x:730,y,width:320,height:24,rx:5,fill:'#cfe6ff22'},shot));
+  T(shot,890,590,'只看得到搜尋框','dim t26',{'text-anchor':'middle'});
+  const qs=['比對標題還是內文？','有沒有分詞？','結果怎麼排序？'].map((s,i)=>{const n=qa(G(g),'s06-q'+i),y=300+i*70;R(n,1120,y,580,56,'panel-hi');T(n,1144,y+38,s,'amber t28 b');return n});
+  const need=qa(T(g,1410,540,'看不見的規則，要靠調查','green t28',{'text-anchor':'middle'}),'s06-need');
+  const up=qa(G(g),'s06-up');R(up,0,535,640,70,'panel-ok');T(up,20,581,'「做個搜尋」→「照驗證過的規則做」','green t28 b');
+  return c=>{
+    show(loop,c.p(0,.6));const run=c.p(1,4.5);nodes.forEach((n,i)=>{n.querySelector('rect').setAttribute('class',run*4>i&&run>0?'panel-hi':'panel')});
+    const ang=(-90+run*360)*Math.PI/180;dot.setAttribute('cx',C[0]+Rr*Math.cos(ang));dot.setAttribute('cy',C[1]+Rr*Math.sin(ang));dot.style.opacity=run>0&&run<1?1:0;
+    back.style.opacity=c.p(2,.4);draw_line(bp,c.p(2,1));
+    show(head,c.p(3));rows.forEach((n,i)=>show(n,c.p(4+i)));
+    show(shot,c.p(7));qs.forEach((n,i)=>show(n,c.p(8,.6,i*.6)));show(need,c.p(8,.6,2));show(up,c.p(9));
+  }};
+
+BUILD.s07=g=>{
+  const cols=[['① 只給截圖','AI 自行推理'],['② AI＋REA','代理人＋MCP 工具'],['③ 人工逆向','Ghidra／IDA／Hopper']];
+  const rowsL=['速度','看得多深','可查的證據','容易上手'],score=[[5,1,1,5],[3,4,5,4],[1,5,4,1]];
+  const labels=qa(G(g),'s07-rows');rowsL.forEach((s,r)=>T(labels,40,176+r*78,s,'ink t30 b'));
+  const colG=cols.map(([a,b],i)=>{const n=qa(G(g),'s07-col'+i),x=440+i*420;R(n,x,0,390,430,i===1?'panel-hi':'panel');T(n,x+195,48,a,(i===1?'amber':'ink')+' t34 b',{'text-anchor':'middle'});T(n,x+195,88,b,'dim t26',{'text-anchor':'middle'});
+    const dots=[];score[i].forEach((v,r)=>{for(let k=0;k<5;k++)dots.push([E('circle',{cx:x+95+k*50,cy:166+r*78,r:15,fill:k<v?(i===1?'#ffc857':'#8fd0ff'):'none',stroke:'#cfe6ff66','stroke-width':2},n),r,k])});return{n,dots}});
+  const obs=qa(G(g),'s07-obs');R(obs,40,452,1220,64,'panel-ok');T(obs,64,494,'對照觀察：① 沒裝 REA 先做完　② 裝了 REA 成品明顯更好','green t28 b');
+  const cite=qa(G(g),'s07-cite');R(cite,1290,452,420,64,'panel-bad');T(cite,1500,494,'引述觀察，非嚴格評測','red t28 b',{'text-anchor':'middle'});
+  const tip=qa(G(g),'s07-tip');T(tip,40,592,'熟悉的小功能 → 截圖可能就夠　｜　看不見的規則 → 動用 REA','amber t30 b');
+  return c=>{
+    show(labels,c.p(0));colG.forEach((cg,i)=>{show(cg.n,c.p(1+i));cg.dots.forEach(([d,r,k])=>d.style.opacity=c.p(1+i,.3,.3+r*.15+k*.05))});
+    show(obs,c.p(4));show(cite,c.p(5));show(tip,c.p(6));
+  }};
+
+BUILD.s08=g=>{
+  const term=qa(G(g),'s08-term');R(term,0,0,780,250,'term');[[22,'#ff8a7a'],[46,'#ffc857'],[70,'#8ef0c0']].forEach(([x,f])=>E('circle',{cx:x,cy:24,r:8,fill:f},term));
+  const cmd=T(term,26,90,'','green t28 mono'),out1=T(term,26,140,'選擇代理人 → 審核變更 → 重新啟動','dim t26'),out2=T(term,26,188,'需求：Node.js 22.19 以上','dim t26');
+  const chat=qa(G(g),'s08-chat');R(chat,0,268,780,70,'panel',35);T(chat,30,313,'💬「幫我安裝 github.com/morluto/rea」','ink t28');
+  const files=qa(G(g),'s08-files');T(files,860,32,'自製迷你筆記 App（4 個檔案）','dim t26');['package.json','main.js','preload.js','search.js'].forEach((s,i)=>{const x=860+i*212;E('path',{class:'line',d:`M${x},44h174l26,18v24h-200z`},files);T(files,x+12,78,s,'ink t26 mono')});
+  const chain=[['context-bridge','window.notes.search()','#8fd0ff'],['preload','ipcRenderer.invoke','#8fd0ff'],['IPC 頻道','"notes:search"','#ffc857'],['主程序','ipcMain.handle','#8ef0c0'],['search.js','find(q)','#8ef0c0']].map(([a,b,col],i)=>{const n=qa(G(g),'s08-chain'+i),y=104+i*46;R(n,860,y,840,40,'panel',6);T(n,876,y+29,a,'t26',{style:`fill:${col}`});T(n,1100,y+29,b,'ink t26 mono');if(i<4)T(n,1680,y+33,'↓','dim t26',{'text-anchor':'end'});return n});
+  const lim=qa(G(g),'s08-lim');R(lim,0,380,780,220,'panel-bad');T(lim,24,428,'REA 自己附上的限制','red t30 b');lines(lim,24,478,['・程式碼只做靜態解析，從未執行','・找不到，不代表不存在'],'ink t28',48);
+  const app=qa(G(g),'s08-app','s08-app');R(app,860,380,840,230,'panel');T(app,880,414,'參考影片：復刻 Mac 備忘錄（只要筆記功能）','dim t26');
+  E('line',{x1:1070,y1:430,x2:1070,y2:560,class:'line'},app);E('line',{x1:1290,y1:430,x2:1290,y2:560,class:'line'},app);
+  lines(app,880,466,['📁 所有筆記','📁 影片企劃','🗑 最近刪除'],'ink t26',36);lines(app,1086,466,['📌 企劃','拍攝清單'],'ink t26',36);[460,490,520].forEach(y=>E('rect',{x:1306,y,width:[360,360,220][(y-460)/30],height:12,rx:5,fill:'#cfe6ff33'},app));
+  const checks=qa(G(g),'s08-checks','s08-app');['新增','釘選','資料夾','搜尋','復原'].forEach((s,i)=>{R(checks,880+i*120,568,108,34,'panel-ok',6);T(checks,934+i*120,594,'✓'+s,'green t26',{'text-anchor':'middle'})});
+  const simple=qa(G(g,{transform:'rotate(-6 1560 440)'}),'s08-simple','s08-app');R(simple,1420,412,280,60,'panel-hi');T(simple,1560,452,'目標刻意簡單','amber t28 b',{'text-anchor':'middle'});
+  const full='$ npx rea-agents setup';
+  return c=>{
+    show(term,c.p(0,.5));cmd.textContent=full.slice(0,Math.round(full.length*c.p(0,1.6,.3)));out1.style.opacity=c.p(0,.5,2);out2.style.opacity=c.p(0,.5,2.4);
+    show(chat,c.p(1));show(files,c.p(2));chain.forEach((n,i)=>show(n,c.p(3,.5,i*.7)));show(lim,c.p(4));
+    show(app,c.p(5),-14);show(checks,c.p(6),-14);show(simple,c.p(7),-16);
+  }};
+
+BUILD.s09=g=>{
+  const pc=qa(G(g),'s09-pc');R(pc,0,20,640,290,'panel-ok');T(pc,30,70,'你的電腦','green t34 b');T(pc,30,112,'REA 拆得到：檔案、程式、請求紀錄','ink t28');
+  const sv=qa(G(g),'s09-server');R(sv,1040,20,660,290,'panel-bad');T(sv,1070,70,'遠端伺服器','red t34 b');T(sv,1070,112,'核心邏輯在這裡','ink t28');
+  R(sv,1070,150,380,120,'panel');lines(sv,1094,196,['後端程式','（拿不到）'],'dim t28',40);E('path',{class:'line',d:'M1530,200v-24a36,36 0 0 1 72,0v24',stroke:'#ff8a7a'},sv);R(sv,1514,200,104,78,'panel-bad',8);
+  const border=qa(G(g),'s09-border');E('line',{x1:840,y1:0,x2:840,y2:330,stroke:'#ffc857','stroke-width':3,'stroke-dasharray':'12 10'},border);T(border,840,360,'能力邊界','amber t28 b',{'text-anchor':'middle'});
+  const flow=G(g);const req=G(flow),res=G(flow);E('line',{x1:660,y1:190,x2:1020,y2:190,stroke:'#cfe6ff','stroke-width':3},req);arrowHead(req,1028,190,0,'#cfe6ff');T(req,760,176,'請求','ink t26');
+  E('line',{x1:1020,y1:250,x2:660,y2:250,stroke:'#cfe6ff','stroke-width':3},res);arrowHead(res,652,250,180,'#cfe6ff');T(res,862,288,'回應 ✓ 抓得到','green t26');
+  const cards=[['跨裝置同步','畫面好做；斷線、衝突','要自己設計'],['混淆・加殼','推論會變成猜測',''],['合法授權','商業工具要授權；','對象要有權研究'],['認明官方來源','爆紅後出現過','夾帶木馬的山寨版']].map((l,i)=>{const n=qa(G(g),'s09-card'+i),x=i*432;R(n,x,400,404,200,i===3?'panel-hi':'panel');T(n,x+24,448,l[0],(i===3?'amber':'ink')+' t30 b');lines(n,x+24,500,l.slice(1).filter(Boolean),'dim t28',42);return n});
+  return c=>{
+    show(pc,c.p(0));show(sv,c.p(0,.6,.3));show(border,c.p(0,.6,.6));
+    show(req,c.p(1,.6));show(res,c.p(1,.6,.8));cards.forEach((n,i)=>show(n,c.p(2+i)));
+  }};
+
+BUILD.s10=g=>{
+  const data=[['1','舊工具＋代理人＝質變','工具存在，','不等於一般人用得起來','panel'],['2','參考物是最好的規格書','但要做多少，','邊界還是得自己畫','panel'],['3','主流代理人可能內建','類似的逆向能力','（推測，截至 2026-10-17）','panel']];
+  const cards=data.map(([n,t,a,b,cls],i)=>{const gg=qa(G(g),'s10-card'+i,i===2?'s10-guess':undefined),x=i*584;R(gg,x,20,552,440,cls);corners(gg,x,20,552,440);T(gg,x+36,130,n,'amber b mono',{style:'font-size:96px'});T(gg,x+36,220,t,'ink t34 b');lines(gg,x+36,290,[a,b],'dim t30',48);return gg});
+  const tpl=qa(G(g),'s10-tpl');R(tpl,600,486,520,110,'panel-ok');lines(tpl,624,530,['寫企劃也一樣：','一份好範本 ＞ 一堆形容詞'],'green t28',40);
+  const guess=qa(G(g),'s10-guess','s10-guess');E('rect',{x:1168,y:20,width:552,height:440,rx:10,fill:'none',stroke:'#ffc857','stroke-width':3,'stroke-dasharray':'14 10'},guess);R(guess,1450,40,250,52,'panel-hi',26);T(guess,1575,76,'推測','amber t28 b',{'text-anchor':'middle'});
+  return c=>{cards.forEach((k,i)=>show(k,c.p([1,2,4][i])));show(tpl,c.p(3));show(guess,c.p(4,.6,.5));}};
+
+BUILD.s11=g=>{
+  const sea=E('rect',{x:0,y:170,width:960,height:448,fill:'#3d7bd622'},g);const wl=E('line',{x1:0,y1:170,x2:960,y2:170,stroke:'#8fd0ff','stroke-width':3},g);T(g,940,160,'水面','blue t26',{'text-anchor':'end'});
+  const tip=qa(G(g),'s11-tip');E('polygon',{points:'380,170 440,70 480,100 520,62 580,170',fill:'#eaf4ff33',stroke:'#eaf4ff','stroke-width':2.5},tip);T(tip,600,110,'單一功能','ink t30 b');T(tip,600,148,'越來越容易被復刻','amber t26');
+  const body=qa(G(g),'s11-body');E('polygon',{points:'380,170 580,170 760,290 800,470 700,600 230,600 120,450 170,280',fill:'#eaf4ff14',stroke:'#cfe6ff','stroke-width':2.5,'stroke-dasharray':'10 8'},body);
+  const deep=['同步架構','舊資料相容','客服','權限','使用者多年的資料'].map((s,i)=>T(g,470,250+i*68,s,i===4?'amber t30 b':'ink t30',{'text-anchor':'middle'}));
+  const q=qa(T(g,1020,60,'護城河會消失嗎？','ink t40 b'),'s11-q');
+  const pers=qa(G(g),'s11-personal');R(pers,1020,100,700,110,'panel-ok');T(pers,1044,146,'個人','green t30 b');T(pers,1044,190,'量身打造一個工具，變得很便宜','ink t28');
+  const biz=qa(G(g),'s11-biz');R(biz,1020,230,700,110,'panel-bad');T(biz,1044,276,'賣給大眾的產品','red t30 b');T(biz,1044,320,'仍是長期營運的硬仗','ink t28');
+  const ruler=qa(G(g),'s11-ruler');E('line',{x1:1040,y1:420,x2:1700,y2:420,class:'line'},ruler);[[1040,'點子'],[1200,'雛形'],[1700,'產品']].forEach(([x,s])=>{E('line',{x1:x,y1:406,x2:x,y2:434,class:'line'},ruler);T(ruler,x,470,s,'ink t28 b',{'text-anchor':x===1700?'end':x===1040?'start':'middle'})});
+  T(ruler,1120,404,'近','green t26',{'text-anchor':'middle'});T(ruler,1450,404,'還很遠：軟體工程的本質','amber t26',{'text-anchor':'middle'});
+  const focus=qa(G(g),'s11-focus');R(focus,1020,510,700,90,'panel-hi');E('circle',{cx:1078,cy:555,r:24,class:'line',stroke:'#ffc857'},focus);E('path',{class:'line',d:'M1046,555h64M1078,523v64',stroke:'#ffc857'},focus);T(focus,1124,566,'用 REA：目標越聚焦越好','amber t30 b');
+  return c=>{
+    show(q,c.p(0));show(tip,c.p(1));const w=c.p(2);sea.style.opacity=w;wl.style.opacity=Math.max(.35,w);body.style.opacity=w;
+    deep.forEach((d,i)=>d.style.opacity=c.p(3,.5,i*.7));show(pers,c.p(4));show(biz,c.p(5));show(ruler,c.p(6));show(focus,c.p(7));
+  }};
+
+// ---------- runtime ----------
+const sceneUI={};
+function build(){for(const s of project.variants['zh-TW'].scenes){if(s.section==='credit')continue;const g=G(svg,{id:'scene-'+s.id});g.style.display='none';sceneUI[s.id]={g,draw:BUILD[s.id](g)}}}
+function scale(){if(!project)return;const s=exporting?1:Math.min(1,$('shell').clientWidth/project.width);$('stage').style.transform='scale('+s+')';$('viewport').style.width=project.width*s+'px';$('viewport').style.height=project.height*s+'px'}
+function currentScene(t){return project.variants[locale].scenes.find(s=>t>=s.start&&t<s.end)||project.variants[locale].scenes.at(-1)}
+function setAudio(){audio.pause();const m=project.variants[locale].mix;audioReady=!!m;if(m)audio.src=new URL('../'+m,location.href).href;else audio.removeAttribute('src');audio.load()}
+function chapters(){const sel=$('chapters');sel.replaceChildren();for(const s of project.variants[locale].scenes){const o=document.createElement('option');o.value=s.start;o.textContent=s.title||'片尾';sel.append(o)}}
+async function loadFonts(){const assets=project.font_assets||[];for(const a of assets){const url=new URL('../'+a.url,location.href);const face=new FontFace(a.family,'url('+JSON.stringify(url.href)+')');try{document.fonts.add(await face.load())}catch{throw Error('Required font could not load: '+a.family)}}await document.fonts.ready}
+function draw(){const t=frame/project.fps,s=currentScene(t),credit=s.section==='credit';
+  $('heading').textContent=s.title||'';$('subheading').textContent=s.screen||'';
+  for(const id of ['heading','subheading','visual','titleblock','eyebrow'])$(id).style.display=credit?'none':'';
+  $('credit').style.display=credit?'flex':'none';
+  for(const id in sceneUI)sceneUI[id].g.style.display=id===s.id?'':'none';
+  if(!credit){const n=project.variants[locale].scenes.indexOf(s)+1;$('eyebrow').textContent=`第 ${n} 幕 ／ ${SEC[s.section]}`;$('tb-no').textContent='REA-'+String(n).padStart(2,'0');$('tb-note').textContent=NOTE[s.id]||'示意';
+    const beats=s.phases.filter(p=>p.name[0]==='b'),at=i=>beats[i]?t-beats[i].start:-1e9;
+    sceneUI[s.id].draw({t,local:t-s.start,at,p:(i,d=.7,delay=0)=>smooth((at(i)-delay)/d)})}
+  const cue=project.variants[locale].subtitles.cues.find(c=>t>=c.start&&t<c.end);
+  $('caption').style.display=cue&&captionOn&&!credit?'flex':'none';$('caption1').textContent=cue?.text['zh-TW']||'';$('caption2').textContent=cue?.text[subs]||'';$('caption2').lang=subs.slice(0,2);
+  $('progress-mark').style.width=100*t/project.duration+'%';$('seek').value=frame;$('time').textContent=t.toFixed(1)+' / '+project.duration+' s';$('chapters').value=s.start;
+  $('feedback').textContent=TARGETS[target].feedback;
+}
+async function seekToFrame(n,language=locale){if(!project.variants[language])throw Error('Unknown locale');if(language!==locale){locale=language;$('locale').value=locale;chapters();setAudio()}frame=Math.max(0,Math.min(Math.round(project.duration*project.fps)-1,Math.round(n)));draw();if(!exporting&&audioReady&&Math.abs(audio.currentTime-frame/project.fps)>.15)audio.currentTime=frame/project.fps;return frame}
+function pause(){playing=false;audio.pause();$('play').textContent='播放'}
+async function play(){if(frame>=project.duration*project.fps-1)await seekToFrame(0);playing=true;last=performance.now();$('play').textContent='暫停';if(audioReady){audio.currentTime=frame/project.fps;try{await audio.play()}catch{pause();$('feedback').textContent='音軌無法播放，請檢查音檔或瀏覽器權限。';return}}requestAnimationFrame(tick)}
+function tick(now){if(!playing)return;const next=audioReady?Math.floor(audio.currentTime*project.fps):frame+(now-last)*project.fps/1000;last=now;if(next>=project.duration*project.fps){seekToFrame(project.duration*project.fps-1);pause();return}frame=next;draw();requestAnimationFrame(tick)}
+audio.addEventListener('ended',()=>{if(playing){seekToFrame(project.duration*project.fps-1);pause()}});
+function box(node,id){const r=node.getBoundingClientRect(),b=$('stage').getBoundingClientRect(),s=b.width/project.width;return{id,x:(r.x-b.x)/s,y:(r.y-b.y)/s,width:r.width/s,height:r.height/s,container:'visual'}}
+window.lesson={ready:async()=>{await loaded;await document.fonts.ready},seekToFrame,getProject:()=>project,
+  bounds:()=>{if($('visual').style.display==='none')return[];const s=currentScene(frame/project.fps),ui=sceneUI[s.id];if(!ui)return[];
+    return[...ui.g.querySelectorAll('[data-b]')].filter(n=>+getComputedStyle(n).opacity>0.01&&n.getBoundingClientRect().width>0).map(n=>{const o=box(n,n.dataset.b);if(n.dataset.og)o.overlapGroup=n.dataset.og;return o})}};
+const loaded=(async()=>{const res=await fetch('../project.json');if(!res.ok)throw Error('Cannot load project.json');project=await res.json();if(!project.variants[locale])throw Error('Unknown locale');await loadFonts();build();$('stage').style.width=project.width+'px';$('stage').style.height=project.height+'px';$('seek').max=Math.round(project.duration*project.fps)-1;$('locale').value=locale;$('subs').value=subs;$('target').value=target;chapters();setAudio();scale();await seekToFrame(0)})();
+$('play').onclick=()=>playing?pause():play();$('replay').onclick=async()=>{pause();await seekToFrame(0);await play()};
+$('seek').oninput=()=>{pause();seekToFrame(Number($('seek').value))};$('locale').onchange=()=>{pause();seekToFrame(frame,$('locale').value)};
+$('subs').onchange=()=>{subs=$('subs').value;draw()};$('chapters').onchange=()=>{pause();seekToFrame(Number($('chapters').value)*project.fps)};
+$('captions').onclick=()=>{captionOn=!captionOn;$('captions').textContent=captionOn?'字幕開啟':'字幕關閉';$('captions').setAttribute('aria-pressed',String(captionOn));draw()};
+$('target').onchange=()=>{target=$('target').value;draw()};
+$('goto-layers').onclick=()=>{pause();const s=project.variants[locale].scenes.find(x=>x.id==='s05'),b=s.phases.find(p=>p.name==='b9');seekToFrame(((b?b.end:s.end)-0.2)*project.fps)};
+addEventListener('keydown',e=>{if(e.target.closest('select,input'))return;if(e.key===' '){e.preventDefault();playing?pause():play()}else if(e.key==='ArrowRight'){pause();seekToFrame(frame+5*project.fps)}else if(e.key==='ArrowLeft'){pause();seekToFrame(frame-5*project.fps)}});
+addEventListener('resize',scale);
+</script>
+</html>
